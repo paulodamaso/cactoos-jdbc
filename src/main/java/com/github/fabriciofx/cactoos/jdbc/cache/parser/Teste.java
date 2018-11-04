@@ -21,44 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.session;
+package com.github.fabriciofx.cactoos.jdbc.cache.parser;
 
-import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.txn.TransactedConnection;
-import java.sql.Connection;
-import org.cactoos.Scalar;
-import org.cactoos.scalar.StickyScalar;
+import com.github.fabriciofx.cactoos.jdbc.cache.SQLiteLexer;
+import com.github.fabriciofx.cactoos.jdbc.cache.SQLiteParser;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-/**
- * Transacted session.
- *
- * <p>Produces a {@link java.sql.Connection} that only closes on commit() or
- * rollback()</p>
- *
- * @since 0.1
- */
-public final class TransactedSession implements Session {
-    /**
-     * Holded txn.
-     */
-    private final Scalar<Connection> scalar;
-
-    /**
-     * Ctor.
-     * @param session Session
-     */
-    public TransactedSession(final Session session) {
-        this.scalar = new StickyScalar<>(
-            () -> {
-                final Connection connection = session.connection();
-                connection.setAutoCommit(false);
-                return new TransactedConnection(connection);
-            }
+public final class Teste {
+    public static void main(String[] args) {
+        CharStream stream = CharStreams.fromString(
+            "SELECT id, name, address FROM contact WHERE name = 'Lucas'"
         );
-    }
-
-    @Override
-    public Connection connection() throws Exception {
-        return this.scalar.value();
+        final SQLiteLexer lexer = new SQLiteLexer(stream);
+        final SQLiteParser parser = new SQLiteParser(new CommonTokenStream(lexer));
+        final ParseTree tree = parser.parse();
+        final ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(new CachedListener(parser), tree);
     }
 }

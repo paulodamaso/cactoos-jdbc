@@ -21,54 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+package com.github.fabriciofx.cactoos.jdbc.row;
 
 import com.github.fabriciofx.cactoos.jdbc.Rows;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.UncheckedScalar;
 
-/**
- * Rows as ResultSet.
- *
- * @since 0.1
- */
-public final class ResultSetAsRows implements Rows {
-    /**
-     * Rows.
-     */
+public final class FilteredRows implements Rows {
     private final UncheckedScalar<List<Map<String, Object>>> rows;
 
-    /**
-     * Ctor.
-     * @param rst A ResultSet
-     */
-    public ResultSetAsRows(final ResultSet rst) {
+    public FilteredRows(final Rows rows, final String... columns) {
         this.rows = new UncheckedScalar<>(
             new StickyScalar<>(
                 () -> {
-                    final List<Map<String, Object>> rws = new LinkedList<>();
-                    final ResultSetMetaData rsmd = rst.getMetaData();
-                    final int cols = rsmd.getColumnCount();
-                    while (rst.next()) {
-                        final Map<String, Object> flds = new LinkedHashMap<>();
-                        for (int idx = 1; idx <= cols; ++idx) {
-                            final String name = rsmd.getColumnName(idx)
-                                .toLowerCase(Locale.ENGLISH);
-                            final Object data = rst.getObject(idx);
-                            flds.put(name, data);
+                    final List<Map<String, Object>> list = new LinkedList<>();
+                    for (final Map<String, Object> cell : rows) {
+                        final Map<String, Object> map = new LinkedHashMap<>();
+                        for (final String col : columns) {
+                            map.put(col, cell.get(col));
                         }
-                        rws.add(flds);
+                        list.add(map);
                     }
-                    return rws;
+                    return list;
                 }
             )
         );
@@ -76,7 +55,7 @@ public final class ResultSetAsRows implements Rows {
 
     @Override
     public Iterator<Map<String, Object>> iterator() {
-        return new UncheckedScalar<>(this.rows).value().iterator();
+        return this.rows.value().iterator();
     }
 
     @Override

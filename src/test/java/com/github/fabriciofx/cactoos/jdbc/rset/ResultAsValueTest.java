@@ -66,7 +66,7 @@ public final class ResultAsValueTest {
                 )
             ).result();
             MatcherAssert.assertThat(
-                "Can't get a generated key value",
+                "Can't column a generated key value",
                 new ResultAsValue<>(
                     new InsertWithKeys<>(
                         session,

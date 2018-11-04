@@ -21,8 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.txn;
+package com.github.fabriciofx.cactoos.jdbc.cache;
 
+import com.github.fabriciofx.cactoos.jdbc.cache.sql.ChangedSql;
+import com.github.fabriciofx.cactoos.jdbc.cache.sql.CleanedSql;
+import com.github.fabriciofx.cactoos.jdbc.cache.sql.ColumnsSql;
+import com.github.fabriciofx.cactoos.jdbc.cache.sql.StatementSql;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -31,6 +35,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -41,61 +46,62 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.Text;
+import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.text.UncheckedText;
 
-/**
- * Transacted txn.
- *
- * @since 0.1
- * @checkstyle ParameterNameCheck (500 lines)
- * @checkstyle ParameterNumberCheck (500 lines)
- * @checkstyle TooManyMethods (500 lines)
- */
-@SuppressWarnings(
-    {
-        "PMD.TooManyMethods",
-        "PMD.LongVariable",
-        "PMD.UseVarargs",
-        "PMD.BooleanGetMethodName",
-        "PMD.ExcessivePublicCount"
-    }
-)
-public final class TransactedConnection implements Connection {
-    /**
-     * The txn.
-     */
+public final class CachedConnection implements Connection {
     private final Connection origin;
+    private final Map<String, ResultSet> cache;
 
-    /**
-     * Number of created statements.
-     */
-    private final AtomicInteger stmts;
-
-    /**
-     * Ctor.
-     * @param connection A Connection
-     */
-    public TransactedConnection(final Connection connection) {
+    public CachedConnection(
+        final Connection connection,
+        final Map<String, ResultSet> cch
+    ) {
         this.origin = connection;
-        this.stmts = new AtomicInteger(0);
+        this.cache = cch;
     }
 
     @Override
     public Statement createStatement() throws SQLException {
-        this.stmts.getAndIncrement();
         return this.origin.createStatement();
     }
 
     @Override
-    public PreparedStatement prepareStatement(final String sql) throws
-        SQLException {
-        this.stmts.getAndIncrement();
-        return this.origin.prepareStatement(sql);
+    public PreparedStatement prepareStatement(final String sql)
+        throws SQLException {
+        final CleanedSql cleaned = new CleanedSql(sql);
+        final String stmt = new UncheckedText(
+            new StatementSql(cleaned)
+        ).asString();
+        final PreparedStatement prepared;
+        if (stmt.equals("SELECT")) {
+            final String changed = new UncheckedText(
+                new ChangedSql(
+                    cleaned,
+                    new ColumnsSql(cleaned)
+                )
+            ).asString();
+            prepared = this.origin.prepareStatement(changed);
+            final String[] columns = new UncheckedScalar<>(
+                new ColumnsSql(cleaned)
+            ).value();
+            return new CachedPreparedStatement(
+                prepared,
+                this.cache,
+                changed,
+                columns
+            );
+        } else {
+            prepared = this.origin.prepareStatement(
+                new UncheckedText(cleaned).asString()
+            );
+        }
+        return prepared;
     }
 
     @Override
     public CallableStatement prepareCall(final String sql) throws SQLException {
-        this.stmts.getAndIncrement();
         return this.origin.prepareCall(sql);
     }
 
@@ -106,7 +112,7 @@ public final class TransactedConnection implements Connection {
 
     @Override
     public void setAutoCommit(final boolean autoCommit) throws SQLException {
-        // Don't allow change the auto commit state
+        this.origin.setAutoCommit(autoCommit);
     }
 
     @Override
@@ -117,20 +123,16 @@ public final class TransactedConnection implements Connection {
     @Override
     public void commit() throws SQLException {
         this.origin.commit();
-        this.stmts.set(0);
     }
 
     @Override
     public void rollback() throws SQLException {
         this.origin.rollback();
-        this.stmts.set(0);
     }
 
     @Override
     public void close() throws SQLException {
-        if (this.stmts.get() == 0) {
-            this.origin.close();
-        }
+        this.origin.close();
     }
 
     @Override
@@ -188,8 +190,7 @@ public final class TransactedConnection implements Connection {
         final int resultSetType,
         final int resultSetConcurrency
     ) throws SQLException {
-        this.stmts.getAndIncrement();
-        return this.origin.createStatement(resultSetType, resultSetConcurrency);
+        return null;
     }
 
     @Override
@@ -198,12 +199,7 @@ public final class TransactedConnection implements Connection {
         final int resultSetType,
         final int resultSetConcurrency
     ) throws SQLException {
-        this.stmts.getAndIncrement();
-        return this.origin.prepareStatement(
-            sql,
-            resultSetType,
-            resultSetConcurrency
-        );
+        return null;
     }
 
     @Override
@@ -212,12 +208,7 @@ public final class TransactedConnection implements Connection {
         final int resultSetType,
         final int resultSetConcurrency
     ) throws SQLException {
-        this.stmts.getAndIncrement();
-        return this.origin.prepareCall(
-            sql,
-            resultSetType,
-            resultSetConcurrency
-        );
+        return null;
     }
 
     @Override
@@ -226,8 +217,8 @@ public final class TransactedConnection implements Connection {
     }
 
     @Override
-    public void setTypeMap(final Map<String, Class<?>> map) throws
-        SQLException {
+    public void setTypeMap(final Map<String, Class<?>> map)
+        throws SQLException {
         this.origin.setTypeMap(map);
     }
 
@@ -257,9 +248,8 @@ public final class TransactedConnection implements Connection {
     }
 
     @Override
-    public void releaseSavepoint(
-        final Savepoint savepoint
-    ) throws SQLException {
+    public void releaseSavepoint(final Savepoint savepoint)
+        throws SQLException {
         this.origin.releaseSavepoint(savepoint);
     }
 
@@ -269,7 +259,6 @@ public final class TransactedConnection implements Connection {
         final int resultSetConcurrency,
         final int resultSetHoldability
     ) throws SQLException {
-        this.stmts.getAndIncrement();
         return this.origin.createStatement(
             resultSetType,
             resultSetConcurrency,
@@ -284,7 +273,6 @@ public final class TransactedConnection implements Connection {
         final int resultSetConcurrency,
         final int resultSetHoldability
     ) throws SQLException {
-        this.stmts.getAndIncrement();
         return this.origin.prepareStatement(
             sql,
             resultSetType,
@@ -300,7 +288,6 @@ public final class TransactedConnection implements Connection {
         final int resultSetConcurrency,
         final int resultSetHoldability
     ) throws SQLException {
-        this.stmts.getAndIncrement();
         return this.origin.prepareCall(
             sql,
             resultSetType,
@@ -314,7 +301,6 @@ public final class TransactedConnection implements Connection {
         final String sql,
         final int autoGeneratedKeys
     ) throws SQLException {
-        this.stmts.getAndIncrement();
         return this.origin.prepareStatement(sql, autoGeneratedKeys);
     }
 
@@ -323,7 +309,6 @@ public final class TransactedConnection implements Connection {
         final String sql,
         final int[] columnIndexes
     ) throws SQLException {
-        this.stmts.getAndIncrement();
         return this.origin.prepareStatement(sql, columnIndexes);
     }
 
@@ -332,7 +317,6 @@ public final class TransactedConnection implements Connection {
         final String sql,
         final String[] columnNames
     ) throws SQLException {
-        this.stmts.getAndIncrement();
         return this.origin.prepareStatement(sql, columnNames);
     }
 

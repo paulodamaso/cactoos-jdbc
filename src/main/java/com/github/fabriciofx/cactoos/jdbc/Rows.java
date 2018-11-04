@@ -21,44 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.session;
+package com.github.fabriciofx.cactoos.jdbc;
 
-import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.txn.TransactedConnection;
-import java.sql.Connection;
-import org.cactoos.Scalar;
-import org.cactoos.scalar.StickyScalar;
+import java.util.Map;
 
-/**
- * Transacted session.
- *
- * <p>Produces a {@link java.sql.Connection} that only closes on commit() or
- * rollback()</p>
- *
- * @since 0.1
- */
-public final class TransactedSession implements Session {
-    /**
-     * Holded txn.
-     */
-    private final Scalar<Connection> scalar;
+public interface Rows extends Iterable<Map<String, Object>> {
+    int count();
 
-    /**
-     * Ctor.
-     * @param session Session
-     */
-    public TransactedSession(final Session session) {
-        this.scalar = new StickyScalar<>(
-            () -> {
-                final Connection connection = session.connection();
-                connection.setAutoCommit(false);
-                return new TransactedConnection(connection);
-            }
-        );
-    }
-
-    @Override
-    public Connection connection() throws Exception {
-        return this.scalar.value();
-    }
+    Map<String, Object> row(int index);
 }

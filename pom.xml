@@ -154,6 +154,41 @@ SOFTWARE.
   </dependencies>
   <profiles>
     <profile>
+      <id>jcabi-antlr4</id>
+      <activation>
+        <file>
+          <exists>${basedir}/src/main/antlr4</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4-runtime</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-maven-plugin</artifactId>
+            <version>4.7.1</version>
+            <configuration>
+              <sourceDirectory>src/main/antlr4</sourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>jcabi-antlr4</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>antlr4</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>qulice</id>
       <build>
         <plugins>

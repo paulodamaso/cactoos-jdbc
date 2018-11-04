@@ -201,7 +201,7 @@ public final class SelectTest {
                     )
                 ).result();
                 MatcherAssert.assertThat(
-                    "Can't select a person name",
+                    "Can't rows a person name",
                     new ResultSetAsValue<>(
                         new Select(
                             session,

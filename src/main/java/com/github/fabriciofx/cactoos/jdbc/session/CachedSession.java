@@ -24,41 +24,23 @@
 package com.github.fabriciofx.cactoos.jdbc.session;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.txn.TransactedConnection;
+import com.github.fabriciofx.cactoos.jdbc.cache.CachedConnection;
 import java.sql.Connection;
-import org.cactoos.Scalar;
-import org.cactoos.scalar.StickyScalar;
+import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Transacted session.
- *
- * <p>Produces a {@link java.sql.Connection} that only closes on commit() or
- * rollback()</p>
- *
- * @since 0.1
- */
-public final class TransactedSession implements Session {
-    /**
-     * Holded txn.
-     */
-    private final Scalar<Connection> scalar;
+public final class CachedSession implements Session {
+    private final Map<String, ResultSet> cache;
+    private final Session origin;
 
-    /**
-     * Ctor.
-     * @param session Session
-     */
-    public TransactedSession(final Session session) {
-        this.scalar = new StickyScalar<>(
-            () -> {
-                final Connection connection = session.connection();
-                connection.setAutoCommit(false);
-                return new TransactedConnection(connection);
-            }
-        );
+    public CachedSession(final Session session) {
+        this.origin = session;
+        this.cache = new HashMap<>();
     }
 
     @Override
     public Connection connection() throws Exception {
-        return this.scalar.value();
+        return new CachedConnection(this.origin.connection(), this.cache);
     }
 }

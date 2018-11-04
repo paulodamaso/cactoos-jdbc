@@ -69,7 +69,7 @@ import org.cactoos.text.UncheckedText;
 )
 public final class LoggedConnection implements Connection {
     /**
-     * The connection.
+     * The txn.
      */
     private final Connection origin;
 
@@ -89,7 +89,7 @@ public final class LoggedConnection implements Connection {
     private final Level level;
 
     /**
-     * The connection id.
+     * The txn id.
      */
     private final int num;
 
@@ -101,11 +101,11 @@ public final class LoggedConnection implements Connection {
     /**
      * Ctor.
      *
-     * @param connection Decorated connection
+     * @param connection Decorated txn
      * @param src The name of source data
      * @param lggr The logger
      * @param lvl The log level
-     * @param num The connection id
+     * @param num The txn id
      * @param stmtsId The statement id
      */
     public LoggedConnection(

@@ -37,7 +37,7 @@ import org.cactoos.Text;
 public interface Query extends Text {
     /**
      * Create a PreparedStatement.
-     * @param connection A connection to the DataSource
+     * @param connection A txn to the DataSource
      * @return A PreparedStatement
      * @throws Exception If fails
      */
