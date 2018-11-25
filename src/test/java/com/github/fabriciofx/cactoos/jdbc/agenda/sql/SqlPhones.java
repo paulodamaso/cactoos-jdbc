@@ -38,6 +38,7 @@ import com.github.fabriciofx.cactoos.jdbc.stmt.Select;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.cactoos.Scalar;
 import org.cactoos.text.FormattedText;
@@ -78,30 +79,6 @@ public final class SqlPhones implements Phones {
     public SqlPhones(final Session sssn, final UUID contact) {
         this.session = sssn;
         this.contact = contact;
-    }
-
-    @Override
-    public Phone phone(
-        final String number,
-        final String carrier
-    ) throws Exception {
-        final Scalar<Integer> seq = new ResultAsValue<>(
-            new InsertWithKeys<>(
-                this.session,
-                new KeyedQuery(
-                    new JoinedText(
-                        " ",
-                        "INSERT INTO phone (contact, number, carrier)",
-                        "VALUES (:contact, :number, :carrier)"
-                    ),
-                    "seq",
-                    new UuidParam("contact", this.contact),
-                    new TextParam("number", number),
-                    new TextParam("carrier", carrier)
-                )
-            )
-        );
-        return new SqlPhone(this.session, this.contact, seq.value());
     }
 
     @Override

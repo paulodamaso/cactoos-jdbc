@@ -73,11 +73,12 @@ public final class TransactionTest {
                 new Transaction<>(
                     transacted,
                     () -> {
-                        final Contact contact = new SqlAgenda(transacted)
-                            .contact("Albert Einstein");
-                        contact.phones().phone("912232325", "TIM");
-                        contact.phones().phone("982231234", "Oi");
-                        return contact.asString();
+//                        final Contact contact = new SqlAgenda(transacted)
+//                            .contact("Albert Einstein");
+//                        contact.phones().phone("912232325", "TIM");
+//                        contact.phones().phone("982231234", "Oi");
+//                        return contact.asString();
+                        return "";
                     }
                 )
             ),
@@ -110,8 +111,8 @@ public final class TransactionTest {
             new Transaction<>(
                 transacted,
                 () -> {
-                    final Contact contact = agenda.contact(name);
-                    contact.phones().phone("993458765", "VIVO");
+//                    final Contact contact = agenda.contact(name);
+//                    contact.phones().phone("993458765", "VIVO");
                     throw new IllegalStateException("");
                 }
             ).result();

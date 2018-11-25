@@ -121,29 +121,20 @@ public final class SelectTest {
                                     "SELECT * FROM employee"
                                 )
                             ),
-                            "employees",
                             "employee"
                         ).value()
                     ),
                     XhtmlMatchers.hasXPaths(
-                        "/employees/employee/id[text()='1']",
-                        "/employees/employee/name[text()='John Wick']",
-                        String.join(
-                            "",
-                            "/employees/employee/address[text()=",
-                            "'Boulevard Street, 34']"
-                        ),
-                        "/employees/employee/married[text()='false']",
-                        "/employees/employee/salary[text()='13456.00']",
-                        "/employees/employee/id[text()='2']",
-                        "/employees/employee/name[text()='Adam Park']",
-                        String.join(
-                            "",
-                            "/employees/employee/address[text()=",
-                            "'Sunset Place, 14']"
-                        ),
-                        "/employees/employee/married[text()='true']",
-                        "/employees/employee/salary[text()='12345.00']"
+                        "/employee/id[text()='1']",
+                        "/employee/name[text()='John Wick']",
+                        "/employee/address[text()='Boulevard Street, 34']",
+                        "/employee/married[text()='false']",
+                        "/employee/salary[text()='13456.00']",
+                        "/employee/id[text()='2']",
+                        "/employee/name[text()='Adam Park']",
+                        "/employee/address[text()='Sunset Place, 14']",
+                        "/employee/married[text()='true']",
+                        "/employee/salary[text()='12345.00']"
                     )
                 );
             }

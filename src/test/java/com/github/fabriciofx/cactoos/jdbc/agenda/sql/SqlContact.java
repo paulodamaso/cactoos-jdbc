@@ -25,15 +25,18 @@ package com.github.fabriciofx.cactoos.jdbc.agenda.sql;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Contact;
-import com.github.fabriciofx.cactoos.jdbc.agenda.Phone;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Phones;
 import com.github.fabriciofx.cactoos.jdbc.query.SimpleQuery;
 import com.github.fabriciofx.cactoos.jdbc.query.param.TextParam;
 import com.github.fabriciofx.cactoos.jdbc.query.param.UuidParam;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsValue;
+import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsXml;
+import com.github.fabriciofx.cactoos.jdbc.stmt.Insert;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Select;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Update;
+import java.util.Map;
 import java.util.UUID;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
 
 /**
  * Contact for SQL.
@@ -64,21 +67,49 @@ public final class SqlContact implements Contact {
     }
 
     @Override
-    public String name() throws Exception {
-        return new ResultSetAsValue<String>(
+    public String about() throws Exception {
+        final String contact = new ResultSetAsXml(
             new Select(
                 this.session,
                 new SimpleQuery(
                     "SELECT name FROM contact WHERE id = :id",
                     new UuidParam("id", this.id)
                 )
-            )
+            ),
+            "contact"
+        ).value();
+        final String phones = new ResultSetAsXml(
+            new Select(
+                this.session,
+                new SimpleQuery(
+                    "SELECT number, carrier FROM phone WHERE contact = :contact",
+                    new UuidParam("contact", this.id)
+                )
+            ),
+            "phone"
         ).value();
     }
 
     @Override
     public Phones phones() throws Exception {
         return new SqlPhones(this.session, this.id);
+    }
+
+    @Override
+    public void phone(final Map<String, String> properties) throws Exception {
+        new Insert(
+            this.session,
+            new SimpleQuery(
+                new JoinedText(
+                    " ",
+                    "INSERT INTO phone (contact, number, carrier)",
+                    "VALUES (:contact, :number, :carrier)"
+                ),
+                new UuidParam("contact", this.id),
+                new TextParam("number", properties.get("number")),
+                new TextParam("carrier", properties.get("carrier"))
+            )
+        ).result();
     }
 
     @Override
@@ -93,31 +124,13 @@ public final class SqlContact implements Contact {
     }
 
     @Override
-    public void rename(final String name) throws Exception {
+    public void update(final Map<String, String> properties) throws Exception {
         new Update(
             this.session,
             new SimpleQuery(
                 "UPDATE contact SET name = :name WHERE id = :id",
-                new TextParam("name", name),
-                new UuidParam("id", this.id)
+                new TextParam("name", properties.get("name"))
             )
         ).result();
-    }
-
-    @Override
-    public String asString() throws Exception {
-        final StringBuilder strb = new StringBuilder();
-        strb.append(String.format("Name: %s\n", this.name()));
-        for (final Phone phone : this.phones()) {
-            strb.append(
-                String.format(
-                    "Phone: %s (%s)\n",
-                    phone.number(),
-                    phone.carrier()
-                )
-            );
-        }
-        strb.deleteCharAt(strb.length() - 1);
-        return strb.toString();
     }
 }
