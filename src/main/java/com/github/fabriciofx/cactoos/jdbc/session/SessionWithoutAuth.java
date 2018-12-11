@@ -21,53 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.stmt;
+package com.github.fabriciofx.cactoos.jdbc.session;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import com.github.fabriciofx.cactoos.jdbc.session.SessionWithTransaction;
 import java.sql.Connection;
-import java.util.concurrent.Callable;
+import javax.sql.DataSource;
 
 /**
- * Transaction.
+ * No authenticated session.
  *
- * @param <T> Type of the rset
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.CloseResource"})
-public final class Transaction<T> implements Statement<T> {
+public final class SessionWithoutAuth implements Session {
     /**
-     * The session.
+     * DataSource.
      */
-    private final Session session;
-
-    /**
-     * Callable to be executed in a transaction.
-     */
-    private final Callable<T> callable;
+    private final DataSource source;
 
     /**
      * Ctor.
-     * @param sssn A session
-     * @param call A Callable to be executed in a transaction
+     * @param source DataSource
      */
-    public Transaction(final SessionWithTransaction sssn, final Callable<T> call) {
-        this.session = sssn;
-        this.callable = call;
+    public SessionWithoutAuth(final DataSource source) {
+        this.source = source;
     }
 
     @Override
-    public T result() throws Exception {
-        final Connection connection = this.session.connection();
-        try {
-            final T res = this.callable.call();
-            connection.commit();
-            return res;
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            connection.rollback();
-            throw ex;
-        }
+    public Connection connection() throws Exception {
+        return this.source.getConnection();
     }
 }

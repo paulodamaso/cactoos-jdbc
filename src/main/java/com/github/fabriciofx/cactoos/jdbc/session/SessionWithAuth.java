@@ -21,53 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.stmt;
+package com.github.fabriciofx.cactoos.jdbc.session;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import com.github.fabriciofx.cactoos.jdbc.session.SessionWithTransaction;
 import java.sql.Connection;
-import java.util.concurrent.Callable;
+import javax.sql.DataSource;
 
 /**
- * Transaction.
+ * Authenticated session.
  *
- * @param <T> Type of the rset
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.CloseResource"})
-public final class Transaction<T> implements Statement<T> {
+public final class SessionWithAuth implements Session {
     /**
-     * The session.
+     * The DataSource.
      */
-    private final Session session;
+    private final DataSource source;
 
     /**
-     * Callable to be executed in a transaction.
+     * User name.
      */
-    private final Callable<T> callable;
+    private final String user;
+
+    /**
+     * User password.
+     */
+    private final String password;
 
     /**
      * Ctor.
-     * @param sssn A session
-     * @param call A Callable to be executed in a transaction
+     * @param source DataSource
+     * @param user User name
+     * @param password User password
      */
-    public Transaction(final SessionWithTransaction sssn, final Callable<T> call) {
-        this.session = sssn;
-        this.callable = call;
+    public SessionWithAuth(
+        final DataSource source,
+        final String user,
+        final String password
+    ) {
+        this.source = source;
+        this.user = user;
+        this.password = password;
     }
 
     @Override
-    public T result() throws Exception {
-        final Connection connection = this.session.connection();
-        try {
-            final T res = this.callable.call();
-            connection.commit();
-            return res;
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            connection.rollback();
-            throw ex;
-        }
+    public Connection connection() throws Exception {
+        return this.source.getConnection(this.user, this.password);
     }
 }

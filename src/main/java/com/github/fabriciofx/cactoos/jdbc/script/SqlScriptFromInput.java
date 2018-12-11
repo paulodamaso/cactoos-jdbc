@@ -23,8 +23,8 @@
  */
 package com.github.fabriciofx.cactoos.jdbc.script;
 
+import com.github.fabriciofx.cactoos.jdbc.ScriptSql;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.SqlScript;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
@@ -39,7 +39,7 @@ import org.cactoos.Input;
  *
  * @since 0.2
  */
-public final class SqlScriptFromInput implements SqlScript {
+public final class SqlScriptFromInput implements ScriptSql {
     /**
      * Input.
      */

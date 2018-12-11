@@ -23,9 +23,9 @@
  */
 package com.github.fabriciofx.cactoos.jdbc.script;
 
+import com.github.fabriciofx.cactoos.jdbc.ScriptSql;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.SqlScript;
-import com.github.fabriciofx.cactoos.jdbc.query.SimpleQuery;
+import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Update;
 import org.cactoos.Input;
 import org.cactoos.Text;
@@ -43,7 +43,7 @@ import org.cactoos.text.TrimmedText;
  * @since 0.2
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class OoSqlScriptFromInput implements SqlScript {
+public final class OoSqlScriptFromInput implements ScriptSql {
     /**
      * Input.
      */
@@ -63,7 +63,7 @@ public final class OoSqlScriptFromInput implements SqlScript {
             new Mapped<>(
                 (Text sql) -> new Update(
                     session,
-                    new SimpleQuery(sql)
+                    new QuerySimple(sql)
                 ).result(),
                 new SplitText(
                     new JoinedText(

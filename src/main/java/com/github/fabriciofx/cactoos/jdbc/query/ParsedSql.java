@@ -25,7 +25,7 @@ package com.github.fabriciofx.cactoos.jdbc.query;
 
 import com.github.fabriciofx.cactoos.jdbc.QueryParam;
 import com.github.fabriciofx.cactoos.jdbc.QueryParams;
-import com.github.fabriciofx.cactoos.jdbc.SmartQueryParams;
+import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -52,7 +52,7 @@ public final class ParsedSql implements Text  {
      * @param params SQL query parameters
      */
     public ParsedSql(final String sql, final QueryParam... params) {
-        this(() -> sql, new SmartQueryParams(params));
+        this(() -> sql, new QueryParamsSmart(params));
     }
 
     /**
@@ -61,7 +61,7 @@ public final class ParsedSql implements Text  {
      * @param params SQL query parameters
      */
     public ParsedSql(final Text sql, final QueryParam... params) {
-        this(sql, new SmartQueryParams(params));
+        this(sql, new QueryParamsSmart(params));
     }
 
     /**

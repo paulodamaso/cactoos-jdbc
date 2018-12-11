@@ -21,53 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.stmt;
+package com.github.fabriciofx.cactoos.jdbc.session;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import com.github.fabriciofx.cactoos.jdbc.session.SessionWithTransaction;
+import com.github.fabriciofx.cactoos.jdbc.connection.ConnectionWithTransaction;
 import java.sql.Connection;
-import java.util.concurrent.Callable;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.StickyScalar;
 
 /**
- * Transaction.
+ * Transacted session.
  *
- * @param <T> Type of the rset
+ * <p>Produces a {@link java.sql.Connection} that only closes on commit() or
+ * rollback()</p>
+ *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.CloseResource"})
-public final class Transaction<T> implements Statement<T> {
+public final class SessionWithTransaction implements Session {
     /**
-     * The session.
+     * Holded connection.
      */
-    private final Session session;
-
-    /**
-     * Callable to be executed in a transaction.
-     */
-    private final Callable<T> callable;
+    private final Scalar<Connection> scalar;
 
     /**
      * Ctor.
-     * @param sssn A session
-     * @param call A Callable to be executed in a transaction
+     * @param session Session
      */
-    public Transaction(final SessionWithTransaction sssn, final Callable<T> call) {
-        this.session = sssn;
-        this.callable = call;
+    public SessionWithTransaction(final Session session) {
+        this.scalar = new StickyScalar<>(
+            () -> {
+                final Connection connection = session.connection();
+                connection.setAutoCommit(false);
+                return new ConnectionWithTransaction(connection);
+            }
+        );
     }
 
     @Override
-    public T result() throws Exception {
-        final Connection connection = this.session.connection();
-        try {
-            final T res = this.callable.call();
-            connection.commit();
-            return res;
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            connection.rollback();
-            throw ex;
-        }
+    public Connection connection() throws Exception {
+        return this.scalar.value();
     }
 }

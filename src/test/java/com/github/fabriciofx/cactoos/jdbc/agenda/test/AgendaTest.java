@@ -27,10 +27,10 @@ import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Agenda;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Contact;
-import com.github.fabriciofx.cactoos.jdbc.agenda.sql.SqlAgenda;
+import com.github.fabriciofx.cactoos.jdbc.agenda.sql.AgendaSql;
 import com.github.fabriciofx.cactoos.jdbc.script.SqlScriptFromInput;
-import com.github.fabriciofx.cactoos.jdbc.server.H2Server;
-import com.github.fabriciofx.cactoos.jdbc.server.PsqlServer;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerH2;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerPsql;
 import com.jcabi.matchers.XhtmlMatchers;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
@@ -59,7 +59,7 @@ public final class AgendaTest {
     public void addContact() throws Exception {
         try (
             Servers servers = new Servers(
-                new H2Server(
+                new ServerH2(
                     new SqlScriptFromInput(
                         new ResourceOf(
                             new JoinedText(
@@ -70,7 +70,7 @@ public final class AgendaTest {
                         )
                     )
                 ),
-                new PsqlServer(
+                new ServerPsql(
                     new SqlScriptFromInput(
                         new ResourceOf(
                             new JoinedText(
@@ -84,7 +84,7 @@ public final class AgendaTest {
             )
         ) {
             for (final Session session : servers.sessions()) {
-                final Agenda agenda = new SqlAgenda(session);
+                final Agenda agenda = new AgendaSql(session);
                 final Contact contact = agenda.contact(
                     new MapOf<String, String>(
                         new MapEntry<>("name", "Donald Knuth")
@@ -122,7 +122,7 @@ public final class AgendaTest {
     public void findContact() throws Exception {
         try (
             Servers servers = new Servers(
-                new H2Server(
+                new ServerH2(
                     new SqlScriptFromInput(
                         new ResourceOf(
                             new JoinedText(
@@ -133,7 +133,7 @@ public final class AgendaTest {
                         )
                     )
                 ),
-                new PsqlServer(
+                new ServerPsql(
                     new SqlScriptFromInput(
                         new ResourceOf(
                             new JoinedText(
@@ -149,7 +149,7 @@ public final class AgendaTest {
             for (final Session session : servers.sessions()) {
                 MatcherAssert.assertThat(
                     XhtmlMatchers.xhtml(
-                        new SqlAgenda(session)
+                        new AgendaSql(session)
                             .filter("maria")
                             .iterator()
                             .next()
@@ -167,7 +167,7 @@ public final class AgendaTest {
     public void renameContact() throws Exception {
         try (
             Servers servers = new Servers(
-                new H2Server(
+                new ServerH2(
                     new SqlScriptFromInput(
                         new ResourceOf(
                             new JoinedText(
@@ -178,7 +178,7 @@ public final class AgendaTest {
                         )
                     )
                 ),
-                new PsqlServer(
+                new ServerPsql(
                     new SqlScriptFromInput(
                         new ResourceOf(
                             new JoinedText(
@@ -192,7 +192,7 @@ public final class AgendaTest {
             )
         ) {
             for (final Session session : servers.sessions()) {
-                final Agenda agenda = new SqlAgenda(session);
+                final Agenda agenda = new AgendaSql(session);
                 final Contact contact = agenda.filter("maria").iterator()
                     .next();
                 contact.update(
@@ -202,7 +202,7 @@ public final class AgendaTest {
                 );
                 MatcherAssert.assertThat(
                     XhtmlMatchers.xhtml(
-                        new SqlAgenda(session)
+                        new AgendaSql(session)
                             .filter("maria")
                             .iterator()
                             .next()

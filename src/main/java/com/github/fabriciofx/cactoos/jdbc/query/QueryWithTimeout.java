@@ -21,53 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.stmt;
+package com.github.fabriciofx.cactoos.jdbc.query;
 
-import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import com.github.fabriciofx.cactoos.jdbc.session.SessionWithTransaction;
+import com.github.fabriciofx.cactoos.jdbc.Query;
 import java.sql.Connection;
-import java.util.concurrent.Callable;
+import java.sql.PreparedStatement;
 
 /**
- * Transaction.
+ * Timeout query.
  *
- * @param <T> Type of the rset
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.CloseResource"})
-public final class Transaction<T> implements Statement<T> {
+public final class QueryWithTimeout implements Query {
     /**
-     * The session.
+     * The query to be decorated.
      */
-    private final Session session;
+    private final Query origin;
 
     /**
-     * Callable to be executed in a transaction.
+     * Query timeout time in seconds.
      */
-    private final Callable<T> callable;
+    private final int time;
 
     /**
      * Ctor.
-     * @param sssn A session
-     * @param call A Callable to be executed in a transaction
+     * @param query The SQL query
+     * @param seconds The timeout time
      */
-    public Transaction(final SessionWithTransaction sssn, final Callable<T> call) {
-        this.session = sssn;
-        this.callable = call;
+    public QueryWithTimeout(final Query query, final int seconds) {
+        this.origin = query;
+        this.time = seconds;
     }
 
     @Override
-    public T result() throws Exception {
-        final Connection connection = this.session.connection();
-        try {
-            final T res = this.callable.call();
-            connection.commit();
-            return res;
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            connection.rollback();
-            throw ex;
-        }
+    public PreparedStatement prepared(
+        final Connection connection
+    ) throws Exception {
+        final PreparedStatement stmt = this.origin.prepared(connection);
+        stmt.setQueryTimeout(this.time);
+        return stmt;
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return this.origin.asString();
     }
 }

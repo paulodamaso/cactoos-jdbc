@@ -21,53 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.stmt;
+package com.github.fabriciofx.cactoos.jdbc.session;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import com.github.fabriciofx.cactoos.jdbc.session.SessionWithTransaction;
 import java.sql.Connection;
-import java.util.concurrent.Callable;
+import java.sql.DriverManager;
 
 /**
- * Transaction.
+ * Driver session.
  *
- * @param <T> Type of the rset
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.CloseResource"})
-public final class Transaction<T> implements Statement<T> {
+public final class SessionDriver implements Session {
     /**
-     * The session.
+     * JDBC URL.
      */
-    private final Session session;
+    private final String url;
 
     /**
-     * Callable to be executed in a transaction.
+     * User name.
      */
-    private final Callable<T> callable;
+    private final String username;
+
+    /**
+     * User password.
+     */
+    private final String password;
 
     /**
      * Ctor.
-     * @param sssn A session
-     * @param call A Callable to be executed in a transaction
+     * @param url JDBC URL
+     * @param user User name
+     * @param password User password
      */
-    public Transaction(final SessionWithTransaction sssn, final Callable<T> call) {
-        this.session = sssn;
-        this.callable = call;
+    public SessionDriver(
+        final String url,
+        final String user,
+        final String password
+    ) {
+        this.url = url;
+        this.username = user;
+        this.password = password;
     }
 
     @Override
-    public T result() throws Exception {
-        final Connection connection = this.session.connection();
-        try {
-            final T res = this.callable.call();
-            connection.commit();
-            return res;
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            connection.rollback();
-            throw ex;
-        }
+    public Connection connection() throws Exception {
+        return DriverManager.getConnection(
+            this.url,
+            this.username,
+            this.password
+        );
     }
 }

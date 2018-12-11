@@ -25,19 +25,19 @@ package com.github.fabriciofx.cactoos.jdbc.stmt;
 
 import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.SmartQueryParams;
-import com.github.fabriciofx.cactoos.jdbc.query.BatchQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.SimpleQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.param.BoolParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.DateParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.DecimalParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.IntParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.TextParam;
+import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
+import com.github.fabriciofx.cactoos.jdbc.query.QueryInBatch;
+import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamBool;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamDate;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamDecimal;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamInt;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
 import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsValue;
 import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsXml;
-import com.github.fabriciofx.cactoos.jdbc.server.H2Server;
-import com.github.fabriciofx.cactoos.jdbc.server.MysqlServer;
-import com.github.fabriciofx.cactoos.jdbc.server.PsqlServer;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerH2;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerPsql;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.time.LocalDate;
 import org.cactoos.text.JoinedText;
@@ -65,15 +65,15 @@ public final class SelectTest {
     public void select() throws Exception {
         try (
             Servers servers = new Servers(
-                new H2Server(),
-                new MysqlServer(),
-                new PsqlServer()
+                new ServerH2(),
+                new ServerMysql(),
+                new ServerPsql()
             )
         ) {
             for (final Session session : servers.sessions()) {
                 new Update(
                     session,
-                    new SimpleQuery(
+                    new QuerySimple(
                         new JoinedText(
                             " ",
                             "CREATE TABLE employee (id INT,",
@@ -86,7 +86,7 @@ public final class SelectTest {
                 ).result();
                 new Batch(
                     session,
-                    new BatchQuery(
+                    new QueryInBatch(
                         new JoinedText(
                             " ",
                             "INSERT INTO employee",
@@ -94,21 +94,21 @@ public final class SelectTest {
                             "VALUES (:id, :name, :birthday, :address,",
                             ":married, :salary)"
                         ),
-                        new SmartQueryParams(
-                            new IntParam("id", 1),
-                            new TextParam("name", "John Wick"),
-                            new DateParam("birthday", "1980-08-15"),
-                            new TextParam("address", "Boulevard Street, 34"),
-                            new BoolParam("married", false),
-                            new DecimalParam("salary", "13456.00")
+                        new QueryParamsSmart(
+                            new ParamInt("id", 1),
+                            new ParamText("name", "John Wick"),
+                            new ParamDate("birthday", "1980-08-15"),
+                            new ParamText("address", "Boulevard Street, 34"),
+                            new ParamBool("married", false),
+                            new ParamDecimal("salary", "13456.00")
                         ),
-                        new SmartQueryParams(
-                            new IntParam("id", 2),
-                            new TextParam("name", "Adam Park"),
-                            new DateParam("birthday", "1985-07-09"),
-                            new TextParam("address", "Sunset Place, 14"),
-                            new BoolParam("married", true),
-                            new DecimalParam("salary", "12345.00")
+                        new QueryParamsSmart(
+                            new ParamInt("id", 2),
+                            new ParamText("name", "Adam Park"),
+                            new ParamDate("birthday", "1985-07-09"),
+                            new ParamText("address", "Sunset Place, 14"),
+                            new ParamBool("married", true),
+                            new ParamDecimal("salary", "12345.00")
                         )
                     )
                 ).result();
@@ -117,7 +117,7 @@ public final class SelectTest {
                         new ResultSetAsXml(
                             new Select(
                                 session,
-                                new SimpleQuery(
+                                new QuerySimple(
                                     "SELECT * FROM employee"
                                 )
                             ),
@@ -154,15 +154,15 @@ public final class SelectTest {
     public void any() throws Exception {
         try (
             Servers servers = new Servers(
-                new H2Server(),
-                new MysqlServer(),
-                new PsqlServer()
+                new ServerH2(),
+                new ServerMysql(),
+                new ServerPsql()
             )
         ) {
             for (final Session session : servers.sessions()) {
                 new Update(
                     session,
-                    new SimpleQuery(
+                    new QuerySimple(
                         new JoinedText(
                             " ",
                             "CREATE TABLE person (id INT, name VARCHAR(30),",
@@ -174,7 +174,7 @@ public final class SelectTest {
                 ).result();
                 new Batch(
                     session,
-                    new BatchQuery(
+                    new QueryInBatch(
                         new JoinedText(
                             " ",
                             "INSERT INTO person",
@@ -182,21 +182,21 @@ public final class SelectTest {
                             "VALUES (:id, :name, :created_at, :city,",
                             ":working, :height)"
                         ),
-                        new SmartQueryParams(
-                            new IntParam("id", 1),
-                            new TextParam("name", "Rob Pike"),
-                            new DateParam("created_at", LocalDate.now()),
-                            new TextParam("city", "San Francisco"),
-                            new BoolParam("working", true),
-                            new DecimalParam("height", "1.86")
+                        new QueryParamsSmart(
+                            new ParamInt("id", 1),
+                            new ParamText("name", "Rob Pike"),
+                            new ParamDate("created_at", LocalDate.now()),
+                            new ParamText("city", "San Francisco"),
+                            new ParamBool("working", true),
+                            new ParamDecimal("height", "1.86")
                         ),
-                        new SmartQueryParams(
-                            new IntParam("id", 2),
-                            new TextParam("name", "Ana Pivot"),
-                            new DateParam("created_at", LocalDate.now()),
-                            new TextParam("city", "Washington"),
-                            new BoolParam("working", false),
-                            new DecimalParam("height", "1.62")
+                        new QueryParamsSmart(
+                            new ParamInt("id", 2),
+                            new ParamText("name", "Ana Pivot"),
+                            new ParamDate("created_at", LocalDate.now()),
+                            new ParamText("city", "Washington"),
+                            new ParamBool("working", false),
+                            new ParamDecimal("height", "1.62")
                         )
                     )
                 ).result();
@@ -205,7 +205,7 @@ public final class SelectTest {
                     new ResultSetAsValue<>(
                         new Select(
                             session,
-                            new SimpleQuery(
+                            new QuerySimple(
                                 "SELECT name FROM person"
                             )
                         )

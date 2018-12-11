@@ -25,12 +25,12 @@ package com.github.fabriciofx.cactoos.jdbc.stmt;
 
 import com.github.fabriciofx.cactoos.jdbc.agenda.Agenda;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Contact;
-import com.github.fabriciofx.cactoos.jdbc.agenda.sql.SqlAgenda;
+import com.github.fabriciofx.cactoos.jdbc.agenda.sql.AgendaSql;
 import com.github.fabriciofx.cactoos.jdbc.rset.ResultAsValue;
 import com.github.fabriciofx.cactoos.jdbc.script.SqlScriptFromInput;
-import com.github.fabriciofx.cactoos.jdbc.session.NoAuthSession;
-import com.github.fabriciofx.cactoos.jdbc.session.TransactedSession;
-import com.github.fabriciofx.cactoos.jdbc.source.H2Source;
+import com.github.fabriciofx.cactoos.jdbc.session.SessionWithoutAuth;
+import com.github.fabriciofx.cactoos.jdbc.session.SessionWithTransaction;
+import com.github.fabriciofx.cactoos.jdbc.source.SourceH2;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.util.stream.StreamSupport;
 import org.cactoos.io.ResourceOf;
@@ -58,9 +58,9 @@ import org.junit.Test;
 public final class TransactionTest {
     @Test
     public void commit() throws Exception {
-        final TransactedSession transacted = new TransactedSession(
-            new NoAuthSession(
-                new H2Source("safedb")
+        final SessionWithTransaction transacted = new SessionWithTransaction(
+            new SessionWithoutAuth(
+                new SourceH2("safedb")
             )
         );
         new SqlScriptFromInput(
@@ -75,7 +75,7 @@ public final class TransactionTest {
                     new Transaction<>(
                         transacted,
                         () -> {
-                            final Agenda agenda = new SqlAgenda(transacted);
+                            final Agenda agenda = new AgendaSql(transacted);
                             final Contact contact = agenda.contact(
                                 new MapOf<String, String>(
                                     new MapEntry<>("name", "Albert Einstein")
@@ -110,9 +110,9 @@ public final class TransactionTest {
 
     @Test
     public void rollback() throws Exception {
-        final TransactedSession transacted = new TransactedSession(
-            new NoAuthSession(
-                new H2Source("unsafedb")
+        final SessionWithTransaction transacted = new SessionWithTransaction(
+            new SessionWithoutAuth(
+                new SourceH2("unsafedb")
             )
         );
         new SqlScriptFromInput(
@@ -120,7 +120,7 @@ public final class TransactionTest {
                 "com/github/fabriciofx/cactoos/jdbc/agenda/agendadb-h2.sql"
             )
         ).run(transacted);
-        final Agenda agenda = new SqlAgenda(transacted);
+        final Agenda agenda = new AgendaSql(transacted);
         final String name = "Frank Miller";
         try {
             new Transaction<>(

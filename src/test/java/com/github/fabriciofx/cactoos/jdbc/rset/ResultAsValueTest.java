@@ -25,10 +25,10 @@ package com.github.fabriciofx.cactoos.jdbc.rset;
 
 import com.github.fabriciofx.cactoos.jdbc.Server;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.query.KeyedQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.SimpleQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.param.TextParam;
-import com.github.fabriciofx.cactoos.jdbc.server.MysqlServer;
+import com.github.fabriciofx.cactoos.jdbc.query.QueryWithKeyes;
+import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
 import com.github.fabriciofx.cactoos.jdbc.stmt.InsertWithKeys;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Update;
 import java.math.BigInteger;
@@ -50,12 +50,12 @@ import org.llorllale.cactoos.matchers.ScalarHasValue;
 public final class ResultAsValueTest {
     @Test
     public void insertWithKeys() throws Exception {
-        try (Server server = new MysqlServer()) {
+        try (Server server = new ServerMysql()) {
             server.start();
             final Session session = server.session();
             new Update(
                 session,
-                new SimpleQuery(
+                new QuerySimple(
                     new JoinedText(
                         " ",
                         "CREATE TABLE contact (",
@@ -70,10 +70,10 @@ public final class ResultAsValueTest {
                 new ResultAsValue<>(
                     new InsertWithKeys<>(
                         session,
-                        new KeyedQuery(
+                        new QueryWithKeyes(
                             () -> "INSERT INTO contact (name) VALUES (:name)",
                             "id",
-                            new TextParam("name", "Leonardo da Vinci")
+                            new ParamText("name", "Leonardo da Vinci")
                         )
                     )
                 ),

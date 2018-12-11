@@ -21,53 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.stmt;
+package com.github.fabriciofx.cactoos.jdbc.query.param;
 
-import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import com.github.fabriciofx.cactoos.jdbc.session.SessionWithTransaction;
-import java.sql.Connection;
-import java.util.concurrent.Callable;
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.sql.PreparedStatement;
 
 /**
- * Transaction.
+ * String param.
  *
- * @param <T> Type of the rset
- * @since 0.1
+ * @since 0.2
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.CloseResource"})
-public final class Transaction<T> implements Statement<T> {
+public final class ParamText implements QueryParam {
     /**
-     * The session.
+     * Name.
      */
-    private final Session session;
+    private final String id;
 
     /**
-     * Callable to be executed in a transaction.
+     * Value.
      */
-    private final Callable<T> callable;
+    private final String value;
 
     /**
      * Ctor.
-     * @param sssn A session
-     * @param call A Callable to be executed in a transaction
+     * @param name The id
+     * @param value The data
      */
-    public Transaction(final SessionWithTransaction sssn, final Callable<T> call) {
-        this.session = sssn;
-        this.callable = call;
+    public ParamText(final String name, final String value) {
+        this.id = name;
+        this.value = value;
     }
 
     @Override
-    public T result() throws Exception {
-        final Connection connection = this.session.connection();
-        try {
-            final T res = this.callable.call();
-            connection.commit();
-            return res;
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            connection.rollback();
-            throw ex;
-        }
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setString(index, this.value);
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return this.value;
     }
 }
