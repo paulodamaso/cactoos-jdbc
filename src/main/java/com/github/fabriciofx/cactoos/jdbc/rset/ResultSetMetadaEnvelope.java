@@ -26,7 +26,7 @@ package com.github.fabriciofx.cactoos.jdbc.rset;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public abstract class ResultSetMetadaEnvelope implements ResultSetMetaData {
+abstract class ResultSetMetadaEnvelope implements ResultSetMetaData {
     private final ResultSetMetaData origin;
 
     public ResultSetMetadaEnvelope(final ResultSetMetaData rsmd) {

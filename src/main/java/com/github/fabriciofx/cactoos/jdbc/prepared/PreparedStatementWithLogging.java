@@ -36,6 +36,7 @@ import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
 
 /**
@@ -59,7 +60,8 @@ import org.cactoos.text.UncheckedText;
         "PMD.AvoidUsingShortType"
     }
 )
-public final class PreparedStatementWithLogging extends PreparedStatementEnvelope {
+public final class PreparedStatementWithLogging
+    extends PreparedStatementEnvelope {
     /**
      * The name of source value.
      */
@@ -101,6 +103,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
         this.level = lvl;
         this.id = id;
     }
+
     @Override
     public ResultSet executeQuery() throws SQLException {
         final Instant start = Instant.now();
@@ -111,7 +114,11 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] retrieved a ResultSet in %dms.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] retrieved",
+                        "a ResultSet in %dms."
+                    ),
                     this.source,
                     this.id,
                     millis
@@ -120,6 +127,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
         );
         return rset;
     }
+
     @Override
     public int executeUpdate() throws SQLException {
         final Instant start = Instant.now();
@@ -130,7 +138,11 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] updated a source and returned '%d' in %dms.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] updated a source and",
+                        "returned '%d' in %dms."
+                    ),
                     this.source,
                     this.id,
                     updated,
@@ -140,14 +152,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
         );
         return updated;
     }
+
     @Override
-    public void setNull(final int parameterIndex, final int sqlType) throws SQLException {
+    public void setNull(
+        final int parameterIndex,
+        final int sqlType
+    ) throws SQLException {
         super.setNull(parameterIndex, sqlType);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%d' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -156,14 +176,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setBoolean(final int parameterIndex, final boolean x) throws SQLException {
+    public void setBoolean(
+        final int parameterIndex,
+        final boolean x
+    ) throws SQLException {
         super.setBoolean(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%s' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%s' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -172,14 +200,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setByte(final int parameterIndex, final byte x) throws SQLException {
+    public void setByte(
+        final int parameterIndex,
+        final byte x
+    ) throws SQLException {
         super.setByte(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%d' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -188,14 +224,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setShort(final int parameterIndex, final short x) throws SQLException {
+    public void setShort(
+        final int parameterIndex,
+        final short x
+    ) throws SQLException {
         super.setShort(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%d' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -204,14 +248,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setInt(final int parameterIndex, final int x) throws SQLException {
+    public void setInt(
+        final int parameterIndex,
+        final int x
+    ) throws SQLException {
         super.setInt(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%d' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -220,14 +272,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setLong(final int parameterIndex, final long x) throws SQLException {
+    public void setLong(
+        final int parameterIndex,
+        final long x
+    ) throws SQLException {
         super.setLong(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%d' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -237,13 +297,20 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
         );
     }
     @Override
-    public void setFloat(final int parameterIndex, final float x) throws SQLException {
+    public void setFloat(
+        final int parameterIndex,
+        final float x
+    ) throws SQLException {
         super.setFloat(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%f' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%f' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -252,14 +319,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setDouble(final int parameterIndex, final double x) throws SQLException {
+    public void setDouble(
+        final int parameterIndex,
+        final double x
+    ) throws SQLException {
         super.setDouble(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%f' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%f' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -268,14 +343,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setBigDecimal(final int parameterIndex, final BigDecimal x) throws SQLException {
+    public void setBigDecimal(
+        final int parameterIndex,
+        final BigDecimal x
+    ) throws SQLException {
         super.setBigDecimal(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%s' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%s' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -284,14 +367,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setString(final int parameterIndex, final String x) throws SQLException {
+    public void setString(
+        final int parameterIndex,
+        final String x
+    ) throws SQLException {
         super.setString(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%s' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%s' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -300,14 +391,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setBytes(final int parameterIndex, final byte[] x) throws SQLException {
+    public void setBytes(
+        final int parameterIndex,
+        final byte[] x
+    ) throws SQLException {
         super.setBytes(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' bytes.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%d' bytes."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -316,14 +415,22 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
-    public void setDate(final int parameterIndex, final Date x) throws SQLException {
+    public void setDate(
+        final int parameterIndex,
+        final Date x
+    ) throws SQLException {
         super.setDate(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%s' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at",
+                        "parameter[#%d] with '%s' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -332,6 +439,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
     public void setTime(final int parameterIndex, final Time x) throws SQLException {
         super.setTime(parameterIndex, x);
@@ -380,6 +488,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     /**
      * Set a stream to Unicode.
      * @deprecated It not should be used
@@ -404,6 +513,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
     public void setBinaryStream(final int parameterIndex, final InputStream x, final int length) throws SQLException {
         super.setBinaryStream(parameterIndex, x, length);
@@ -420,6 +530,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
     public void clearParameters() throws SQLException {
         super.clearParameters();
@@ -434,6 +545,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
     public void setObject(final int parameterIndex, final Object x, final int targetSqlType) throws SQLException {
         super.setObject(parameterIndex, x, targetSqlType);
@@ -451,6 +563,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
     public void setObject(final int parameterIndex, final Object x) throws SQLException {
         super.setObject(parameterIndex, x);
@@ -467,6 +580,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
     public boolean execute() throws SQLException {
         final Instant start = Instant.now();
@@ -487,6 +601,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
         );
         return result;
     }
+
     @Override
     public void addBatch() throws SQLException {
         super.addBatch();
@@ -501,6 +616,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
             ).asString()
         );
     }
+
     @Override
     public ResultSet executeQuery(final String sql) throws SQLException {
         final Instant start = Instant.now();
@@ -521,6 +637,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
         );
         return rset;
     }
+
     @Override
     public int executeUpdate(final String sql) throws SQLException {
         final Instant start = Instant.now();
@@ -542,6 +659,7 @@ public final class PreparedStatementWithLogging extends PreparedStatementEnvelop
         );
         return updated;
     }
+
     @Override
     public void close() throws SQLException {
         super.close();

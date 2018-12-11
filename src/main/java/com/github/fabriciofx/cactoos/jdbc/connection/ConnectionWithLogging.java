@@ -36,6 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
 
 /**
@@ -336,8 +337,11 @@ public final class ConnectionWithLogging extends ConnectionEnvelope {
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    // @checkstyle LineLengthCheck (1 line)
-                    "[%s] Statement[#%d] created with type '%d' and concurrency '%d'.",
+                    new JoinedText(
+                        " ",
+                        "[%s] Statement[#%d] created with type",
+                        "'%d' and concurrency '%d'."
+                    ),
                     this.source,
                     this.statements.get(),
                     resultSetType,
@@ -363,8 +367,11 @@ public final class ConnectionWithLogging extends ConnectionEnvelope {
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    // @checkstyle LineLengthCheck (1 line)
-                    "[%s] PreparedStatement[#%d] created using SQL '%s', type '%d' and concurrency '%d'.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] created using SQL",
+                        "'%s', type '%d' and concurrency '%d'."
+                    ),
                     this.source,
                     this.statements.get(),
                     sql,
@@ -391,8 +398,11 @@ public final class ConnectionWithLogging extends ConnectionEnvelope {
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    // @checkstyle LineLengthCheck (1 line)
-                    "[%s] CallableStatement[#%d] created using SQL '%s', type '%d' and concurrency '%d'.",
+                    new JoinedText(
+                        " ",
+                        "[%s] CallableStatement[#%d] created using SQL",
+                        "'%s', type '%d' and concurrency '%d'."
+                    ),
                     this.source,
                     this.statements.get(),
                     sql,
@@ -421,8 +431,11 @@ public final class ConnectionWithLogging extends ConnectionEnvelope {
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    // @checkstyle LineLengthCheck (1 line)
-                    "[%s] PreparedStatement[#%d] created using SQL '%s', type '%d', concurrency '%d' and holdability '%d'.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] created using SQL '%s'",
+                        ", type '%d', concurrency '%d' and holdability '%d'."
+                    ),
                     this.source,
                     this.statements.get(),
                     sql,
@@ -454,8 +467,11 @@ public final class ConnectionWithLogging extends ConnectionEnvelope {
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    // @checkstyle LineLengthCheck (1 line)
-                    "[%s] PreparedStatement[#%d] created using SQL '%s' and %s.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] created using SQL",
+                        "'%s' and %s."
+                    ),
                     this.source,
                     this.statements.get(),
                     sql,

@@ -67,7 +67,7 @@ import java.util.Calendar;
         "PMD.AvoidUsingShortType"
     }
 )
-public abstract class PreparedStatementEnvelope implements PreparedStatement {
+abstract class PreparedStatementEnvelope implements PreparedStatement {
     /**
      * The PreparedStatement.
      */
@@ -253,7 +253,10 @@ public abstract class PreparedStatementEnvelope implements PreparedStatement {
     }
 
     @Override
-    public void setObject(final int parameterIndex, final Object x) throws SQLException {
+    public void setObject(
+        final int parameterIndex,
+        final Object x
+    ) throws SQLException {
         this.origin.setObject(parameterIndex, x);
     }
 
@@ -268,27 +271,43 @@ public abstract class PreparedStatementEnvelope implements PreparedStatement {
     }
 
     @Override
-    public void setCharacterStream(final int parameterIndex, final Reader reader, final int length) throws SQLException {
+    public void setCharacterStream(
+        final int parameterIndex,
+        final Reader reader,
+        final int length
+    ) throws SQLException {
         this.origin.setCharacterStream(parameterIndex, reader, length);
     }
 
     @Override
-    public void setRef(final int parameterIndex, final Ref x) throws SQLException {
+    public void setRef(
+        final int parameterIndex,
+        final Ref x
+    ) throws SQLException {
         this.origin.setRef(parameterIndex, x);
     }
 
     @Override
-    public void setBlob(final int parameterIndex, final Blob x) throws SQLException {
+    public void setBlob(
+        final int parameterIndex,
+        final Blob x
+    ) throws SQLException {
         this.origin.setBlob(parameterIndex, x);
     }
 
     @Override
-    public void setClob(final int parameterIndex, final Clob x) throws SQLException {
+    public void setClob(
+        final int parameterIndex,
+        final Clob x
+    ) throws SQLException {
         this.origin.setClob(parameterIndex, x);
     }
 
     @Override
-    public void setArray(final int parameterIndex, final Array x) throws SQLException {
+    public void setArray(
+        final int parameterIndex,
+        final Array x
+    ) throws SQLException {
         this.origin.setArray(parameterIndex, x);
     }
 
@@ -298,27 +317,46 @@ public abstract class PreparedStatementEnvelope implements PreparedStatement {
     }
 
     @Override
-    public void setDate(final int parameterIndex, final Date x, final Calendar cal) throws SQLException {
+    public void setDate(
+        final int parameterIndex,
+        final Date x,
+        final Calendar cal
+    ) throws SQLException {
         this.origin.setDate(parameterIndex, x, cal);
     }
 
     @Override
-    public void setTime(final int parameterIndex, final Time x, final Calendar cal) throws SQLException {
+    public void setTime(
+        final int parameterIndex,
+        final Time x,
+        final Calendar cal
+    ) throws SQLException {
         this.origin.setTime(parameterIndex, x, cal);
     }
 
     @Override
-    public void setTimestamp(final int parameterIndex, final Timestamp x, final Calendar cal) throws SQLException {
+    public void setTimestamp(
+        final int parameterIndex,
+        final Timestamp x,
+        final Calendar cal
+    ) throws SQLException {
         this.origin.setTimestamp(parameterIndex, x, cal);
     }
 
     @Override
-    public void setNull(final int parameterIndex, final int sqlType, final String typeName) throws SQLException {
+    public void setNull(
+        final int parameterIndex,
+        final int sqlType,
+        final String typeName
+    ) throws SQLException {
         this.origin.setNull(parameterIndex, sqlType, typeName);
     }
 
     @Override
-    public void setURL(final int parameterIndex, final URL x) throws SQLException {
+    public void setURL(
+        final int parameterIndex,
+        final URL x
+    ) throws SQLException {
         this.origin.setURL(parameterIndex, x);
     }
 
@@ -328,97 +366,163 @@ public abstract class PreparedStatementEnvelope implements PreparedStatement {
     }
 
     @Override
-    public void setRowId(final int parameterIndex, final RowId x) throws SQLException {
+    public void setRowId(
+        final int parameterIndex,
+        final RowId x
+    ) throws SQLException {
         this.origin.setRowId(parameterIndex, x);
     }
 
     @Override
-    public void setNString(final int parameterIndex, final String value) throws SQLException {
+    public void setNString(
+        final int parameterIndex,
+        final String value
+    ) throws SQLException {
         this.origin.setNString(parameterIndex, value);
     }
 
     @Override
-    public void setNCharacterStream(final int parameterIndex, final Reader value, final long length) throws SQLException {
+    public void setNCharacterStream(
+        final int parameterIndex,
+        final Reader value,
+        final long length
+    ) throws SQLException {
         this.origin.setNCharacterStream(parameterIndex, value, length);
     }
 
     @Override
-    public void setNClob(final int parameterIndex, final NClob value) throws SQLException {
+    public void setNClob(
+        final int parameterIndex,
+        final NClob value
+    ) throws SQLException {
         this.origin.setNClob(parameterIndex, value);
     }
 
     @Override
-    public void setClob(final int parameterIndex, final Reader reader, final long length) throws SQLException {
+    public void setClob(
+        final int parameterIndex,
+        final Reader reader,
+        final long length
+    ) throws SQLException {
         this.origin.setClob(parameterIndex, reader, length);
     }
 
     @Override
-    public void setBlob(final int parameterIndex, final InputStream inputStream, final long length) throws SQLException {
+    public void setBlob(
+        final int parameterIndex,
+        final InputStream inputStream,
+        final long length
+    ) throws SQLException {
         this.origin.setBlob(parameterIndex, inputStream, length);
     }
 
     @Override
-    public void setNClob(final int parameterIndex, final Reader reader, final long length) throws SQLException {
+    public void setNClob(
+        final int parameterIndex,
+        final Reader reader,
+        final long length
+    ) throws SQLException {
         this.origin.setNClob(parameterIndex, reader, length);
     }
 
     @Override
-    public void setSQLXML(final int parameterIndex, final SQLXML xmlObject) throws SQLException {
+    public void setSQLXML(
+        final int parameterIndex,
+        final SQLXML xmlObject
+    ) throws SQLException {
         this.origin.setSQLXML(parameterIndex, xmlObject);
     }
 
     @Override
-    public void setObject(final int parameterIndex, final Object x, final int targetSqlType, final int scaleOrLength) throws SQLException {
+    public void setObject(
+        final int parameterIndex,
+        final Object x,
+        final int targetSqlType,
+        final int scaleOrLength
+    ) throws SQLException {
         this.origin.setObject(parameterIndex, x, targetSqlType, scaleOrLength);
     }
 
     @Override
-    public void setAsciiStream(final int parameterIndex, final InputStream x, final long length) throws SQLException {
+    public void setAsciiStream(
+        final int parameterIndex,
+        final InputStream x,
+        final long length
+    ) throws SQLException {
         this.origin.setAsciiStream(parameterIndex, x, length);
     }
 
     @Override
-    public void setBinaryStream(final int parameterIndex, final InputStream x, final long length) throws SQLException {
+    public void setBinaryStream(
+        final int parameterIndex,
+        final InputStream x,
+        final long length
+    ) throws SQLException {
         this.origin.setBinaryStream(parameterIndex, x, length);
     }
 
     @Override
-    public void setCharacterStream(final int parameterIndex, final Reader reader, final long length) throws SQLException {
+    public void setCharacterStream(
+        final int parameterIndex,
+        final Reader reader,
+        final long length
+    ) throws SQLException {
         this.origin.setCharacterStream(parameterIndex, reader, length);
     }
 
     @Override
-    public void setAsciiStream(final int parameterIndex, final InputStream x) throws SQLException {
+    public void setAsciiStream(
+        final int parameterIndex,
+        final InputStream x
+    ) throws SQLException {
         this.origin.setAsciiStream(parameterIndex, x);
     }
 
     @Override
-    public void setBinaryStream(final int parameterIndex, final InputStream x) throws SQLException {
+    public void setBinaryStream(
+        final int parameterIndex,
+        final InputStream x
+    ) throws SQLException {
         this.origin.setBinaryStream(parameterIndex, x);
     }
 
     @Override
-    public void setCharacterStream(final int parameterIndex, final Reader reader) throws SQLException {
+    public void setCharacterStream(
+        final int parameterIndex,
+        final Reader reader
+    ) throws SQLException {
         this.origin.setCharacterStream(parameterIndex, reader);
     }
 
     @Override
-    public void setNCharacterStream(final int parameterIndex, final Reader value) throws SQLException {
+    public void setNCharacterStream(
+        final int parameterIndex,
+        final Reader value
+    ) throws SQLException {
         this.origin.setNCharacterStream(parameterIndex, value);
     }
 
     @Override
-    public void setClob(final int parameterIndex, final Reader reader) throws SQLException {
+    public void setClob(
+        final int parameterIndex,
+        final Reader reader
+    ) throws SQLException {
         this.origin.setClob(parameterIndex, reader);
     }
 
     @Override
-    public void setBlob(final int parameterIndex, final InputStream inputStream) throws SQLException {
+    public void setBlob(
+        final int parameterIndex,
+        final InputStream inputStream
+    ) throws SQLException {
         this.origin.setBlob(parameterIndex, inputStream);
     }
 
     @Override
-    public void setNClob(final int parameterIndex, final Reader reader) throws SQLException {
+    public void setNClob(
+        final int parameterIndex,
+        final Reader reader
+    ) throws SQLException {
         this.origin.setNClob(parameterIndex, reader);
     }
 
@@ -573,32 +677,50 @@ public abstract class PreparedStatementEnvelope implements PreparedStatement {
     }
 
     @Override
-    public int executeUpdate(final String sql, final int autoGeneratedKeys) throws SQLException {
+    public int executeUpdate(
+        final String sql,
+        final int autoGeneratedKeys
+    ) throws SQLException {
         return this.origin.executeUpdate(sql, autoGeneratedKeys);
     }
 
     @Override
-    public int executeUpdate(final String sql, final int[] columnIndexes) throws SQLException {
+    public int executeUpdate(
+        final String sql,
+        final int[] columnIndexes
+    ) throws SQLException {
         return this.origin.executeUpdate(sql, columnIndexes);
     }
 
     @Override
-    public int executeUpdate(final String sql, final String[] columnNames) throws SQLException {
+    public int executeUpdate(
+        final String sql,
+        final String[] columnNames
+    ) throws SQLException {
         return this.origin.executeUpdate(sql, columnNames);
     }
 
     @Override
-    public boolean execute(final String sql, final int autoGeneratedKeys) throws SQLException {
+    public boolean execute(
+        final String sql,
+        final int autoGeneratedKeys
+    ) throws SQLException {
         return this.origin.execute(sql, autoGeneratedKeys);
     }
 
     @Override
-    public boolean execute(final String sql, final int[] columnIndexes) throws SQLException {
+    public boolean execute(
+        final String sql,
+        final int[] columnIndexes
+    ) throws SQLException {
         return this.origin.execute(sql, columnIndexes);
     }
 
     @Override
-    public boolean execute(final String sql, final String[] columnNames) throws SQLException {
+    public boolean execute(
+        final String sql,
+        final String[] columnNames
+    ) throws SQLException {
         return this.origin.execute(sql, columnNames);
     }
 

@@ -60,7 +60,7 @@ import java.util.concurrent.Executor;
         "PMD.AvoidDuplicateLiterals"
     }
 )
-public abstract class ConnectionEnvelope implements Connection {
+abstract class ConnectionEnvelope implements Connection {
     /**
      * The Connection to be decorated.
      */
