@@ -23,9 +23,9 @@
  */
 package com.github.fabriciofx.cactoos.jdbc.stmt;
 
+import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
 import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
 import com.github.fabriciofx.cactoos.jdbc.query.QueryInBatch;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
 import com.github.fabriciofx.cactoos.jdbc.query.param.ParamBool;

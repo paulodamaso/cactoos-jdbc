@@ -24,9 +24,9 @@
 package com.github.fabriciofx.cactoos.jdbc.server;
 
 import com.github.fabriciofx.cactoos.jdbc.RandomDatabaseName;
+import com.github.fabriciofx.cactoos.jdbc.ScriptSql;
 import com.github.fabriciofx.cactoos.jdbc.Server;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.ScriptSql;
 import com.github.fabriciofx.cactoos.jdbc.session.SessionWithoutAuth;
 import com.github.fabriciofx.cactoos.jdbc.source.SourceH2;
 import java.io.IOException;

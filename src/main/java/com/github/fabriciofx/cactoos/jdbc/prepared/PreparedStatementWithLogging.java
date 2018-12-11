@@ -23,7 +23,6 @@
  */
 package com.github.fabriciofx.cactoos.jdbc.prepared;
 
-import com.github.fabriciofx.cactoos.jdbc.PreparedStatementEnvelope;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Date;

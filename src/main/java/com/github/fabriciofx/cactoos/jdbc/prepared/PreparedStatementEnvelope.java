@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc;
+package com.github.fabriciofx.cactoos.jdbc.prepared;
 
 import java.io.InputStream;
 import java.io.Reader;
