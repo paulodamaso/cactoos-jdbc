@@ -23,6 +23,7 @@
  */
 package com.github.fabriciofx.cactoos.jdbc.log;
 
+import com.github.fabriciofx.cactoos.jdbc.ConnectionEnvelope;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -67,12 +68,7 @@ import org.cactoos.text.UncheckedText;
         "PMD.AvoidDuplicateLiterals"
     }
 )
-public final class LoggedConnection implements Connection {
-    /**
-     * The connection.
-     */
-    private final Connection origin;
-
+public final class LoggedConnection extends ConnectionEnvelope {
     /**
      * The name of source data.
      */
@@ -116,7 +112,7 @@ public final class LoggedConnection implements Connection {
         final int num,
         final AtomicInteger stmtsId
     ) {
-        this.origin = connection;
+        super(connection);
         this.source = src;
         this.logger = lggr;
         this.level = lvl;
@@ -126,7 +122,7 @@ public final class LoggedConnection implements Connection {
 
     @Override
     public Statement createStatement() throws SQLException {
-        final Statement stmt = this.origin.createStatement();
+        final Statement stmt = super.createStatement();
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -143,7 +139,7 @@ public final class LoggedConnection implements Connection {
     @Override
     public PreparedStatement prepareStatement(final String sql) throws
         SQLException {
-        final PreparedStatement stmt = this.origin.prepareStatement(sql);
+        final PreparedStatement stmt = super.prepareStatement(sql);
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -166,7 +162,7 @@ public final class LoggedConnection implements Connection {
 
     @Override
     public CallableStatement prepareCall(final String sql) throws SQLException {
-        final CallableStatement stmt = this.origin.prepareCall(sql);
+        final CallableStatement stmt = super.prepareCall(sql);
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -183,7 +179,7 @@ public final class LoggedConnection implements Connection {
 
     @Override
     public String nativeSQL(final String sql) throws SQLException {
-        final String nat = this.origin.nativeSQL(sql);
+        final String nat = super.nativeSQL(sql);
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -200,7 +196,7 @@ public final class LoggedConnection implements Connection {
 
     @Override
     public void setAutoCommit(final boolean autoCommit) throws SQLException {
-        this.origin.setAutoCommit(autoCommit);
+        super.setAutoCommit(autoCommit);
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -214,14 +210,9 @@ public final class LoggedConnection implements Connection {
     }
 
     @Override
-    public boolean getAutoCommit() throws SQLException {
-        return this.origin.getAutoCommit();
-    }
-
-    @Override
     public void commit() throws SQLException {
         final Instant start = Instant.now();
-        this.origin.commit();
+        super.commit();
         final Instant end = Instant.now();
         final long millis = Duration.between(start, end).toMillis();
         this.logger.log(
@@ -239,7 +230,7 @@ public final class LoggedConnection implements Connection {
     @Override
     public void rollback() throws SQLException {
         final Instant start = Instant.now();
-        this.origin.rollback();
+        super.rollback();
         final Instant end = Instant.now();
         final long millis = Duration.between(start, end).toMillis();
         this.logger.log(
@@ -256,7 +247,7 @@ public final class LoggedConnection implements Connection {
 
     @Override
     public void close() throws SQLException {
-        this.origin.close();
+        super.close();
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -270,18 +261,8 @@ public final class LoggedConnection implements Connection {
     }
 
     @Override
-    public boolean isClosed() throws SQLException {
-        return this.origin.isClosed();
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
-        return this.origin.getMetaData();
-    }
-
-    @Override
     public void setReadOnly(final boolean readOnly) throws SQLException {
-        this.origin.setReadOnly(readOnly);
+        super.setReadOnly(readOnly);
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -295,13 +276,8 @@ public final class LoggedConnection implements Connection {
     }
 
     @Override
-    public boolean isReadOnly() throws SQLException {
-        return this.origin.isReadOnly();
-    }
-
-    @Override
     public void setCatalog(final String catalog) throws SQLException {
-        this.origin.setCatalog(catalog);
+        super.setCatalog(catalog);
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -315,13 +291,8 @@ public final class LoggedConnection implements Connection {
     }
 
     @Override
-    public String getCatalog() throws SQLException {
-        return this.origin.getCatalog();
-    }
-
-    @Override
     public void setTransactionIsolation(final int lvl) throws SQLException {
-        this.origin.setTransactionIsolation(lvl);
+        super.setTransactionIsolation(lvl);
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -335,13 +306,8 @@ public final class LoggedConnection implements Connection {
     }
 
     @Override
-    public int getTransactionIsolation() throws SQLException {
-        return this.origin.getTransactionIsolation();
-    }
-
-    @Override
     public SQLWarning getWarnings() throws SQLException {
-        final SQLWarning warning = this.origin.getWarnings();
+        final SQLWarning warning = super.getWarnings();
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -357,7 +323,7 @@ public final class LoggedConnection implements Connection {
 
     @Override
     public void clearWarnings() throws SQLException {
-        this.origin.clearWarnings();
+        super.clearWarnings();
         this.logger.log(
             this.level,
             new UncheckedText(
@@ -374,7 +340,7 @@ public final class LoggedConnection implements Connection {
         final int resultSetType,
         final int resultSetConcurrency
     ) throws SQLException {
-        final Statement stmt = this.origin.createStatement(
+        final Statement stmt = super.createStatement(
             resultSetType,
             resultSetConcurrency
         );
@@ -400,7 +366,7 @@ public final class LoggedConnection implements Connection {
         final int resultSetType,
         final int resultSetConcurrency
     ) throws SQLException {
-        final PreparedStatement stmt = this.origin.prepareStatement(
+        final PreparedStatement stmt = super.prepareStatement(
             sql,
             resultSetType,
             resultSetConcurrency
@@ -428,7 +394,7 @@ public final class LoggedConnection implements Connection {
         final int resultSetType,
         final int resultSetConcurrency
     ) throws SQLException {
-        final CallableStatement stmt = this.origin.prepareCall(
+        final CallableStatement stmt = super.prepareCall(
             sql,
             resultSetType,
             resultSetConcurrency
@@ -451,70 +417,13 @@ public final class LoggedConnection implements Connection {
     }
 
     @Override
-    public Map<String, Class<?>> getTypeMap() throws SQLException {
-        return this.origin.getTypeMap();
-    }
-
-    @Override
-    public void setTypeMap(
-        final Map<String, Class<?>> map
-    ) throws SQLException {
-        this.origin.setTypeMap(map);
-    }
-
-    @Override
-    public void setHoldability(final int holdability) throws SQLException {
-        this.origin.setHoldability(holdability);
-    }
-
-    @Override
-    public int getHoldability() throws SQLException {
-        return this.origin.getHoldability();
-    }
-
-    @Override
-    public Savepoint setSavepoint() throws SQLException {
-        return this.origin.setSavepoint();
-    }
-
-    @Override
-    public Savepoint setSavepoint(final String name) throws SQLException {
-        return this.origin.setSavepoint(name);
-    }
-
-    @Override
-    public void rollback(final Savepoint savepoint) throws SQLException {
-        this.origin.rollback(savepoint);
-    }
-
-    @Override
-    public void releaseSavepoint(
-        final Savepoint savepoint
-    ) throws SQLException {
-        this.origin.releaseSavepoint(savepoint);
-    }
-
-    @Override
-    public Statement createStatement(
-        final int resultSetType,
-        final int resultSetConcurrency,
-        final int resultSetHoldability
-    ) throws SQLException {
-        return this.origin.createStatement(
-            resultSetType,
-            resultSetConcurrency,
-            resultSetHoldability
-        );
-    }
-
-    @Override
     public PreparedStatement prepareStatement(
         final String sql,
         final int resultSetType,
         final int resultSetConcurrency,
         final int resultSetHoldability
     ) throws SQLException {
-        final PreparedStatement stmt = this.origin.prepareStatement(
+        final PreparedStatement stmt = super.prepareStatement(
             sql,
             resultSetType,
             resultSetConcurrency,
@@ -539,26 +448,11 @@ public final class LoggedConnection implements Connection {
     }
 
     @Override
-    public CallableStatement prepareCall(
-        final String sql,
-        final int resultSetType,
-        final int resultSetConcurrency,
-        final int resultSetHoldability
-    ) throws SQLException {
-        return this.origin.prepareCall(
-            sql,
-            resultSetType,
-            resultSetConcurrency,
-            resultSetHoldability
-        );
-    }
-
-    @Override
     public PreparedStatement prepareStatement(
         final String sql,
         final int autoGeneratedKeys
     ) throws SQLException {
-        final PreparedStatement stmt = this.origin.prepareStatement(
+        final PreparedStatement stmt = super.prepareStatement(
             sql,
             autoGeneratedKeys
         );
@@ -582,125 +476,5 @@ public final class LoggedConnection implements Connection {
             ).asString()
         );
         return stmt;
-    }
-
-    @Override
-    public PreparedStatement prepareStatement(
-        final String sql,
-        final int[] columnIndexes
-    ) throws SQLException {
-        return this.origin.prepareStatement(sql, columnIndexes);
-    }
-
-    @Override
-    public PreparedStatement prepareStatement(
-        final String sql,
-        final String[] columnNames
-    ) throws SQLException {
-        return this.origin.prepareStatement(sql, columnNames);
-    }
-
-    @Override
-    public Clob createClob() throws SQLException {
-        return this.origin.createClob();
-    }
-
-    @Override
-    public Blob createBlob() throws SQLException {
-        return this.origin.createBlob();
-    }
-
-    @Override
-    public NClob createNClob() throws SQLException {
-        return this.origin.createNClob();
-    }
-
-    @Override
-    public SQLXML createSQLXML() throws SQLException {
-        return this.origin.createSQLXML();
-    }
-
-    @Override
-    public boolean isValid(final int timeout) throws SQLException {
-        return this.origin.isValid(timeout);
-    }
-
-    @Override
-    public void setClientInfo(
-        final String name,
-        final String value
-    ) throws SQLClientInfoException {
-        this.origin.setClientInfo(name, value);
-    }
-
-    @Override
-    public void setClientInfo(
-        final Properties properties
-    ) throws SQLClientInfoException {
-        this.origin.setClientInfo(properties);
-    }
-
-    @Override
-    public String getClientInfo(final String name) throws SQLException {
-        return this.origin.getClientInfo(name);
-    }
-
-    @Override
-    public Properties getClientInfo() throws SQLException {
-        return this.origin.getClientInfo();
-    }
-
-    @Override
-    public Array createArrayOf(
-        final String typeName,
-        final Object[] elements
-    ) throws SQLException {
-        return this.origin.createArrayOf(typeName, elements);
-    }
-
-    @Override
-    public Struct createStruct(
-        final String typeName,
-        final Object[] attributes
-    ) throws SQLException {
-        return this.origin.createStruct(typeName, attributes);
-    }
-
-    @Override
-    public void setSchema(final String schema) throws SQLException {
-        this.origin.setSchema(schema);
-    }
-
-    @Override
-    public String getSchema() throws SQLException {
-        return this.origin.getSchema();
-    }
-
-    @Override
-    public void abort(final Executor executor) throws SQLException {
-        this.origin.abort(executor);
-    }
-
-    @Override
-    public void setNetworkTimeout(
-        final Executor executor,
-        final int milliseconds
-    ) throws SQLException {
-        this.origin.setNetworkTimeout(executor, milliseconds);
-    }
-
-    @Override
-    public int getNetworkTimeout() throws SQLException {
-        return this.origin.getNetworkTimeout();
-    }
-
-    @Override
-    public <T> T unwrap(final Class<T> iface) throws SQLException {
-        return this.origin.unwrap(iface);
-    }
-
-    @Override
-    public boolean isWrapperFor(final Class<?> iface) throws SQLException {
-        return this.origin.isWrapperFor(iface);
     }
 }
