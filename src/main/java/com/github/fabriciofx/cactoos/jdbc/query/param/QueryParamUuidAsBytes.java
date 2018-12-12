@@ -24,14 +24,16 @@
 package com.github.fabriciofx.cactoos.jdbc.query.param;
 
 import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.nio.ByteBuffer;
 import java.sql.PreparedStatement;
+import java.util.UUID;
 
 /**
- * Integer param.
+ * UUID param.
  *
  * @since 0.2
  */
-public final class ParamInt implements QueryParam {
+public final class QueryParamUuidAsBytes implements QueryParam {
     /**
      * Name.
      */
@@ -40,14 +42,14 @@ public final class ParamInt implements QueryParam {
     /**
      * Value.
      */
-    private final Integer value;
+    private final UUID value;
 
     /**
      * Ctor.
      * @param name The id
-     * @param value The data
+     * @param value The apply
      */
-    public ParamInt(final String name, final Integer value) {
+    public QueryParamUuidAsBytes(final String name, final UUID value) {
         this.id = name;
         this.value = value;
     }
@@ -62,7 +64,11 @@ public final class ParamInt implements QueryParam {
         final PreparedStatement stmt,
         final int index
     ) throws Exception {
-        stmt.setInt(index, this.value);
+        // @checkstyle MagicNumber (1 line)
+        final ByteBuffer bbuf = ByteBuffer.wrap(new byte[16]);
+        bbuf.putLong(this.value.getMostSignificantBits());
+        bbuf.putLong(this.value.getLeastSignificantBits());
+        stmt.setBytes(index, bbuf.array());
     }
 
     @Override

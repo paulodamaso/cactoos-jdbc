@@ -21,52 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.query.param;
+package com.github.fabriciofx.cactoos.jdbc.sql;
 
-import com.github.fabriciofx.cactoos.jdbc.QueryParam;
-import java.sql.PreparedStatement;
+import org.cactoos.Text;
 
-/**
- * Double param.
- *
- * @since 0.2
- */
-public final class ParamDouble implements QueryParam {
-    /**
-     * Name.
-     */
-    private final String id;
+public final class SqlChanged implements Text {
+    private final Text origin;
+    private final SqlColumns columns;
 
-    /**
-     * Value.
-     */
-    private final Double value;
-
-    /**
-     * Ctor.
-     * @param name The id
-     * @param value The data
-     */
-    public ParamDouble(final String name, final Double value) {
-        this.id = name;
-        this.value = value;
-    }
-
-    @Override
-    public String name() {
-        return this.id;
-    }
-
-    @Override
-    public void prepare(
-        final PreparedStatement stmt,
-        final int index
-    ) throws Exception {
-        stmt.setDouble(index, this.value);
+    public SqlChanged(final SqlCleaned cleaned, final SqlColumns cols) {
+        this.origin = cleaned;
+        this.columns = cols;
     }
 
     @Override
     public String asString() throws Exception {
-        return this.value.toString();
+        return this.origin.asString().replace(this.columns.asString(), " * ");
     }
 }

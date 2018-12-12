@@ -24,16 +24,16 @@
 package com.github.fabriciofx.cactoos.jdbc.query.param;
 
 import com.github.fabriciofx.cactoos.jdbc.QueryParam;
-import java.nio.ByteBuffer;
+import java.io.IOException;
 import java.sql.PreparedStatement;
-import java.util.UUID;
+import java.time.LocalDate;
 
 /**
- * UUID param.
+ * Date param.
  *
  * @since 0.2
  */
-public final class ParamUuidAsBytes implements QueryParam {
+public final class QueryParamDate implements QueryParam {
     /**
      * Name.
      */
@@ -42,14 +42,23 @@ public final class ParamUuidAsBytes implements QueryParam {
     /**
      * Value.
      */
-    private final UUID value;
+    private final LocalDate value;
 
     /**
      * Ctor.
      * @param name The id
-     * @param value The apply
+     * @param value The data
      */
-    public ParamUuidAsBytes(final String name, final UUID value) {
+    public QueryParamDate(final String name, final String value) {
+        this(name, LocalDate.parse(value));
+    }
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The data
+     */
+    public QueryParamDate(final String name, final LocalDate value) {
         this.id = name;
         this.value = value;
     }
@@ -64,15 +73,11 @@ public final class ParamUuidAsBytes implements QueryParam {
         final PreparedStatement stmt,
         final int index
     ) throws Exception {
-        // @checkstyle MagicNumber (1 line)
-        final ByteBuffer bbuf = ByteBuffer.wrap(new byte[16]);
-        bbuf.putLong(this.value.getMostSignificantBits());
-        bbuf.putLong(this.value.getLeastSignificantBits());
-        stmt.setBytes(index, bbuf.array());
+        stmt.setDate(index, java.sql.Date.valueOf(this.value));
     }
 
     @Override
-    public String asString() throws Exception {
+    public String asString() throws IOException {
         return this.value.toString();
     }
 }

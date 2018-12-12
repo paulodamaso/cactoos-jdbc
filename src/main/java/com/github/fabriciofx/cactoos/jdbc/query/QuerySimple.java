@@ -27,6 +27,7 @@ import com.github.fabriciofx.cactoos.jdbc.Query;
 import com.github.fabriciofx.cactoos.jdbc.QueryParam;
 import com.github.fabriciofx.cactoos.jdbc.QueryParams;
 import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
+import com.github.fabriciofx.cactoos.jdbc.sql.SqlParsed;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import org.cactoos.Text;
@@ -62,7 +63,7 @@ public final class QuerySimple implements Query {
      * @param prms SQL query parameters
      */
     public QuerySimple(final Text sql, final QueryParam... prms) {
-        this.sql = new ParsedSql(sql, prms);
+        this.sql = new SqlParsed(sql, prms);
         this.params = new QueryParamsSmart(prms);
     }
 

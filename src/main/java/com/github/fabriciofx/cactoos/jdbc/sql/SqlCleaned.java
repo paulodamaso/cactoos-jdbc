@@ -21,52 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.query.param;
+package com.github.fabriciofx.cactoos.jdbc.sql;
 
-import com.github.fabriciofx.cactoos.jdbc.QueryParam;
-import java.sql.PreparedStatement;
+import org.cactoos.Text;
 
-/**
- * Long param.
- *
- * @since 0.2
- */
-public final class ParamLong implements QueryParam {
-    /**
-     * Name.
-     */
-    private final String id;
+public final class SqlCleaned implements Text {
+    private final String origin;
 
-    /**
-     * Value.
-     */
-    private final Long value;
-
-    /**
-     * Ctor.
-     * @param name The id
-     * @param value The data
-     */
-    public ParamLong(final String name, final Long value) {
-        this.id = name;
-        this.value = value;
-    }
-
-    @Override
-    public String name() {
-        return this.id;
-    }
-
-    @Override
-    public void prepare(
-        final PreparedStatement stmt,
-        final int index
-    ) throws Exception {
-        stmt.setLong(index, this.value);
+    public SqlCleaned(final String sql) {
+        this.origin = sql;
     }
 
     @Override
     public String asString() throws Exception {
-        return this.value.toString();
+        return this.origin.trim();
     }
 }

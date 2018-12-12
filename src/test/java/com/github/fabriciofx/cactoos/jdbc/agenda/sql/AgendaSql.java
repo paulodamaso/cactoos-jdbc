@@ -28,8 +28,8 @@ import com.github.fabriciofx.cactoos.jdbc.agenda.Agenda;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Contact;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Contacts;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamUuid;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamUuid;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Insert;
 import java.util.Map;
 import java.util.UUID;
@@ -65,8 +65,8 @@ public final class AgendaSql implements Agenda {
             this.session,
             new QuerySimple(
                 "INSERT INTO contact (id, name) VALUES (:id, :name)",
-                new ParamUuid("id", id),
-                new ParamText("name", properties.get("name"))
+                new QueryParamUuid("id", id),
+                new QueryParamText("name", properties.get("name"))
             )
         ).result();
         return new ContactSql(this.session, id);

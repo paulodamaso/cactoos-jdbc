@@ -25,9 +25,10 @@ package com.github.fabriciofx.cactoos.jdbc.rset;
 
 import com.github.fabriciofx.cactoos.jdbc.Server;
 import com.github.fabriciofx.cactoos.jdbc.Session;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultAsValue;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
 import com.github.fabriciofx.cactoos.jdbc.query.QueryWithKeyes;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
 import com.github.fabriciofx.cactoos.jdbc.stmt.InsertWithKeys;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Update;
@@ -73,7 +74,7 @@ public final class ResultAsValueTest {
                         new QueryWithKeyes(
                             () -> "INSERT INTO contact (name) VALUES (:name)",
                             "id",
-                            new ParamText("name", "Leonardo da Vinci")
+                            new QueryParamText("name", "Leonardo da Vinci")
                         )
                     )
                 ),

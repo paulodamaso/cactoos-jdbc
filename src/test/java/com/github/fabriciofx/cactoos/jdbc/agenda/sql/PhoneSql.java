@@ -26,9 +26,9 @@ package com.github.fabriciofx.cactoos.jdbc.agenda.sql;
 import com.github.fabriciofx.cactoos.jdbc.Session;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Phone;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamInt;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamUuid;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamInt;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamUuid;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Update;
 import java.util.Map;
 import java.util.UUID;
@@ -77,8 +77,8 @@ public final class PhoneSql implements Phone {
             this.session,
             new QuerySimple(
                 "DELETE FROM phone WHERE (contact = :contact) AND (seq = :seq)",
-                new ParamUuid("contact", this.contact),
-                new ParamInt("seq", this.seq)
+                new QueryParamUuid("contact", this.contact),
+                new QueryParamInt("seq", this.seq)
             )
         ).result();
     }
@@ -93,10 +93,10 @@ public final class PhoneSql implements Phone {
                     "UPDATE phone SET number = :number, carrier = :carrier",
                     "WHERE (contact = :contact) AND (seq = :seq)"
                 ),
-                new ParamText("number", properties.get("number")),
-                new ParamText("carrier", properties.get("carrier")),
-                new ParamUuid("contact", this.contact),
-                new ParamInt("seq", this.seq)
+                new QueryParamText("number", properties.get("number")),
+                new QueryParamText("carrier", properties.get("carrier")),
+                new QueryParamUuid("contact", this.contact),
+                new QueryParamInt("seq", this.seq)
             )
         ).result();
     }

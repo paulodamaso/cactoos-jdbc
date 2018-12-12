@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.query;
+package com.github.fabriciofx.cactoos.jdbc.sql;
 
 import com.github.fabriciofx.cactoos.jdbc.QueryParam;
 import com.github.fabriciofx.cactoos.jdbc.QueryParams;
@@ -40,7 +40,7 @@ import org.cactoos.text.FormattedText;
  *
  * @since 0.1
  */
-public final class ParsedSql implements Text  {
+public final class SqlParsed implements Text  {
     /**
      * SQL query.
      */
@@ -51,7 +51,7 @@ public final class ParsedSql implements Text  {
      * @param sql SQL query
      * @param params SQL query parameters
      */
-    public ParsedSql(final String sql, final QueryParam... params) {
+    public SqlParsed(final String sql, final QueryParam... params) {
         this(() -> sql, new QueryParamsSmart(params));
     }
 
@@ -60,7 +60,7 @@ public final class ParsedSql implements Text  {
      * @param sql SQL query
      * @param params SQL query parameters
      */
-    public ParsedSql(final Text sql, final QueryParam... params) {
+    public SqlParsed(final Text sql, final QueryParam... params) {
         this(sql, new QueryParamsSmart(params));
     }
 
@@ -69,7 +69,7 @@ public final class ParsedSql implements Text  {
      * @param sql SQL query
      * @param params SQL query parameters
      */
-    public ParsedSql(final Text sql, final QueryParams params) {
+    public SqlParsed(final Text sql, final QueryParams params) {
         this.sql = new StickyScalar<>(
             () -> {
                 final String str = sql.asString();

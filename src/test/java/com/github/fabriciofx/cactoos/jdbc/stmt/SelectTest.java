@@ -26,15 +26,15 @@ package com.github.fabriciofx.cactoos.jdbc.stmt;
 import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
 import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsValue;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsXml;
 import com.github.fabriciofx.cactoos.jdbc.query.QueryInBatch;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamBool;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamDate;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamDecimal;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamInt;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsValue;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsXml;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamBool;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamDate;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamDecimal;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamInt;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerH2;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerPsql;
@@ -95,20 +95,20 @@ public final class SelectTest {
                             ":married, :salary)"
                         ),
                         new QueryParamsSmart(
-                            new ParamInt("id", 1),
-                            new ParamText("name", "John Wick"),
-                            new ParamDate("birthday", "1980-08-15"),
-                            new ParamText("address", "Boulevard Street, 34"),
-                            new ParamBool("married", false),
-                            new ParamDecimal("salary", "13456.00")
+                            new QueryParamInt("id", 1),
+                            new QueryParamText("name", "John Wick"),
+                            new QueryParamDate("birthday", "1980-08-15"),
+                            new QueryParamText("address", "Boulevard Street, 34"),
+                            new QueryParamBool("married", false),
+                            new QueryParamDecimal("salary", "13456.00")
                         ),
                         new QueryParamsSmart(
-                            new ParamInt("id", 2),
-                            new ParamText("name", "Adam Park"),
-                            new ParamDate("birthday", "1985-07-09"),
-                            new ParamText("address", "Sunset Place, 14"),
-                            new ParamBool("married", true),
-                            new ParamDecimal("salary", "12345.00")
+                            new QueryParamInt("id", 2),
+                            new QueryParamText("name", "Adam Park"),
+                            new QueryParamDate("birthday", "1985-07-09"),
+                            new QueryParamText("address", "Sunset Place, 14"),
+                            new QueryParamBool("married", true),
+                            new QueryParamDecimal("salary", "12345.00")
                         )
                     )
                 ).result();
@@ -183,20 +183,20 @@ public final class SelectTest {
                             ":working, :height)"
                         ),
                         new QueryParamsSmart(
-                            new ParamInt("id", 1),
-                            new ParamText("name", "Rob Pike"),
-                            new ParamDate("created_at", LocalDate.now()),
-                            new ParamText("city", "San Francisco"),
-                            new ParamBool("working", true),
-                            new ParamDecimal("height", "1.86")
+                            new QueryParamInt("id", 1),
+                            new QueryParamText("name", "Rob Pike"),
+                            new QueryParamDate("created_at", LocalDate.now()),
+                            new QueryParamText("city", "San Francisco"),
+                            new QueryParamBool("working", true),
+                            new QueryParamDecimal("height", "1.86")
                         ),
                         new QueryParamsSmart(
-                            new ParamInt("id", 2),
-                            new ParamText("name", "Ana Pivot"),
-                            new ParamDate("created_at", LocalDate.now()),
-                            new ParamText("city", "Washington"),
-                            new ParamBool("working", false),
-                            new ParamDecimal("height", "1.62")
+                            new QueryParamInt("id", 2),
+                            new QueryParamText("name", "Ana Pivot"),
+                            new QueryParamDate("created_at", LocalDate.now()),
+                            new QueryParamText("city", "Washington"),
+                            new QueryParamBool("working", false),
+                            new QueryParamDecimal("height", "1.62")
                         )
                     )
                 ).result();

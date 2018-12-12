@@ -23,23 +23,20 @@
  */
 package com.github.fabriciofx.cactoos.jdbc.rows;
 
+import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
 import com.github.fabriciofx.cactoos.jdbc.Rows;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.SmartQueryParams;
-import com.github.fabriciofx.cactoos.jdbc.cache.CachedResultSet;
-import com.github.fabriciofx.cactoos.jdbc.query.BatchQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.SimpleQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.param.BoolParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.DateParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.DecimalParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.IntParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.TextParam;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsRows;
+import com.github.fabriciofx.cactoos.jdbc.query.QueryInBatch;
+import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamBool;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamDate;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamDecimal;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamInt;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
 import com.github.fabriciofx.cactoos.jdbc.row.FilteredRows;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsRows;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsXml;
-import com.github.fabriciofx.cactoos.jdbc.session.CachedSession;
-import com.github.fabriciofx.cactoos.jdbc.session.NoAuthSession;
-import com.github.fabriciofx.cactoos.jdbc.source.H2Source;
+import com.github.fabriciofx.cactoos.jdbc.session.SessionWithoutAuth;
+import com.github.fabriciofx.cactoos.jdbc.source.SourceH2;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Batch;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Select;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Update;
@@ -51,12 +48,12 @@ import org.junit.Test;
 public final class ResultSetAsRowsTest {
     @Test
     public void rows() throws Exception {
-        final Session session = new NoAuthSession(
-            new H2Source("testdb")
+        final Session session = new SessionWithoutAuth(
+            new SourceH2("testdb")
         );
         new Update(
             session,
-            new SimpleQuery(
+            new QuerySimple(
                 new JoinedText(
                     " ",
                     "CREATE TABLE employee (id INT,",
@@ -69,7 +66,7 @@ public final class ResultSetAsRowsTest {
         ).result();
         new Batch(
             session,
-            new BatchQuery(
+            new QueryInBatch(
                 new JoinedText(
                     " ",
                     "INSERT INTO employee",
@@ -77,27 +74,27 @@ public final class ResultSetAsRowsTest {
                     "VALUES (:id, :name, :birthday, :address,",
                     ":married, :salary)"
                 ),
-                new SmartQueryParams(
-                    new IntParam("id", 1),
-                    new TextParam("name", "John Wick"),
-                    new DateParam("birthday", "1980-08-15"),
-                    new TextParam("address", "Boulevard Street, 34"),
-                    new BoolParam("married", false),
-                    new DecimalParam("salary", "13456.00")
+                new QueryParamsSmart(
+                    new QueryParamInt("id", 1),
+                    new QueryParamText("name", "John Wick"),
+                    new QueryParamDate("birthday", "1980-08-15"),
+                    new QueryParamText("address", "Boulevard Street, 34"),
+                    new QueryParamBool("married", false),
+                    new QueryParamDecimal("salary", "13456.00")
                 ),
-                new SmartQueryParams(
-                    new IntParam("id", 2),
-                    new TextParam("name", "Adam Park"),
-                    new DateParam("birthday", "1985-07-09"),
-                    new TextParam("address", "Sunset Place, 14"),
-                    new BoolParam("married", true),
-                    new DecimalParam("salary", "12345.00")
+                new QueryParamsSmart(
+                    new QueryParamInt("id", 2),
+                    new QueryParamText("name", "Adam Park"),
+                    new QueryParamDate("birthday", "1985-07-09"),
+                    new QueryParamText("address", "Sunset Place, 14"),
+                    new QueryParamBool("married", true),
+                    new QueryParamDecimal("salary", "12345.00")
                 )
             )
         ).result();
         final ResultSet rset = new Select(
             session,
-            new SimpleQuery("SELECT * FROM employee")
+            new QuerySimple("SELECT * FROM employee")
         ).result();
         final Rows rows = new ResultSetAsRows(rset);
         for (final Map<String, Object> row : rows) {

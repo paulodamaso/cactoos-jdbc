@@ -25,14 +25,13 @@ package com.github.fabriciofx.cactoos.jdbc.query.param;
 
 import com.github.fabriciofx.cactoos.jdbc.QueryParam;
 import java.sql.PreparedStatement;
-import java.util.UUID;
 
 /**
- * UUID param.
+ * Long param.
  *
  * @since 0.2
  */
-public final class ParamUuid implements QueryParam {
+public final class QueryParamLong implements QueryParam {
     /**
      * Name.
      */
@@ -41,14 +40,14 @@ public final class ParamUuid implements QueryParam {
     /**
      * Value.
      */
-    private final UUID value;
+    private final Long value;
 
     /**
      * Ctor.
      * @param name The id
-     * @param value The apply
+     * @param value The data
      */
-    public ParamUuid(final String name, final UUID value) {
+    public QueryParamLong(final String name, final Long value) {
         this.id = name;
         this.value = value;
     }
@@ -63,7 +62,7 @@ public final class ParamUuid implements QueryParam {
         final PreparedStatement stmt,
         final int index
     ) throws Exception {
-        stmt.setObject(index, this.value);
+        stmt.setLong(index, this.value);
     }
 
     @Override

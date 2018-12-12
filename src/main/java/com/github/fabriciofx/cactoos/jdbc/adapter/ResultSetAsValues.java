@@ -21,72 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+package com.github.fabriciofx.cactoos.jdbc.adapter;
 
 import com.github.fabriciofx.cactoos.jdbc.Statement;
 import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.cactoos.Scalar;
 
 /**
- * Result as XML.
+ * Result as values.
  *
- * @since 0.4
+ * @param <T> Type of the rset
+ * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class ResultSetAsXml implements Scalar<String> {
+public final class ResultSetAsValues<T> implements Scalar<List<T>> {
     /**
      * Statement that returns a ResultSet.
      */
     private final Statement<ResultSet> statement;
 
     /**
-     * Root tag in the XML.
-     */
-    private final String root;
-
-    /**
-     * Child tag in the XML.
-     */
-    private final String child;
-
-    /**
      * Ctor.
-     * @param stmt A statement
-     * @param root A root tag
-     * @param child A child tag
+     * @param stmt A statement that returns a Rows
      */
-    public ResultSetAsXml(
-        final Statement<ResultSet> stmt,
-        final String root,
-        final String child
-    ) {
+    public ResultSetAsValues(final Statement<ResultSet> stmt) {
         this.statement = stmt;
-        this.root = root;
-        this.child = child;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public String value() throws Exception {
-        final StringBuilder strb = new StringBuilder();
-        strb.append(String.format("<%s>", this.root));
+    public List<T> value() throws Exception {
+        final List<T> values = new LinkedList<>();
         try (ResultSet rset = this.statement.result()) {
             for (final Map<String, Object> row : new ResultSetAsRows(rset)) {
-                strb.append(String.format("<%s>", this.child));
-                for (final String key : row.keySet()) {
-                    strb.append(
-                        String.format(
-                            "<%s>%s</%s>",
-                            key,
-                            row.get(key),
-                            key
-                        )
-                    );
+                for (final Object obj : row.values()) {
+                    values.add((T) obj);
                 }
-                strb.append(String.format("</%s>", this.child));
             }
         }
-        strb.append(String.format("</%s>", this.root));
-        return strb.toString();
+        return values;
     }
 }

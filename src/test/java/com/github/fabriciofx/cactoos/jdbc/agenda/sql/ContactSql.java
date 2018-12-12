@@ -24,13 +24,13 @@
 package com.github.fabriciofx.cactoos.jdbc.agenda.sql;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsValue;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsXmlEach;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Contact;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Phones;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamUuid;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsValue;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsXmlEach;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamUuid;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Insert;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Select;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Update;
@@ -76,7 +76,7 @@ public final class ContactSql implements Contact {
                 this.session,
                 new QuerySimple(
                     "SELECT name FROM contact WHERE id = :id",
-                    new ParamUuid("id", this.id)
+                    new QueryParamUuid("id", this.id)
                 )
             )
         ).value();
@@ -89,7 +89,7 @@ public final class ContactSql implements Contact {
                         "SELECT number, carrier FROM phone WHERE",
                         "contact = :contact"
                     ),
-                    new ParamUuid("contact", this.id)
+                    new QueryParamUuid("contact", this.id)
                 )
             ),
             "phone"
@@ -122,9 +122,9 @@ public final class ContactSql implements Contact {
                     "INSERT INTO phone (contact, number, carrier)",
                     "VALUES (:contact, :number, :carrier)"
                 ),
-                new ParamUuid("contact", this.id),
-                new ParamText("number", properties.get("number")),
-                new ParamText("carrier", properties.get("carrier"))
+                new QueryParamUuid("contact", this.id),
+                new QueryParamText("number", properties.get("number")),
+                new QueryParamText("carrier", properties.get("carrier"))
             )
         ).result();
     }
@@ -135,7 +135,7 @@ public final class ContactSql implements Contact {
             this.session,
             new QuerySimple(
                 "DELETE FROM contact WHERE id = :id",
-                new ParamUuid("id", this.id)
+                new QueryParamUuid("id", this.id)
             )
         ).result();
     }
@@ -146,8 +146,8 @@ public final class ContactSql implements Contact {
             this.session,
             new QuerySimple(
                 "UPDATE contact SET name = :name WHERE id = :id",
-                new ParamText("name", properties.get("name")),
-                new ParamUuid("id", this.id)
+                new QueryParamText("name", properties.get("name")),
+                new QueryParamUuid("id", this.id)
             )
         ).result();
     }

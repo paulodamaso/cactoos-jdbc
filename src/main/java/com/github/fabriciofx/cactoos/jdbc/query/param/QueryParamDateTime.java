@@ -21,19 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.cache.sql;
+package com.github.fabriciofx.cactoos.jdbc.query.param;
 
-import org.cactoos.Text;
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-public final class CleanedSql implements Text {
-    private final String origin;
+/**
+ * DateTime param.
+ *
+ * @since 0.2
+ */
+public final class QueryParamDateTime implements QueryParam {
+    /**
+     * Name.
+     */
+    private final String id;
 
-    public CleanedSql(final String sql) {
-        this.origin = sql;
+    /**
+     * Value.
+     */
+    private final LocalDateTime value;
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The data
+     */
+    public QueryParamDateTime(final String name, final LocalDateTime value) {
+        this.id = name;
+        this.value = value;
+    }
+
+    @Override
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setTimestamp(index, Timestamp.valueOf(this.value));
     }
 
     @Override
     public String asString() throws Exception {
-        return this.origin.trim();
+        return this.value.toString();
     }
 }

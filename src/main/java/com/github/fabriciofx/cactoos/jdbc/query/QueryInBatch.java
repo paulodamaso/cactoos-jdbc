@@ -25,6 +25,7 @@ package com.github.fabriciofx.cactoos.jdbc.query;
 
 import com.github.fabriciofx.cactoos.jdbc.Query;
 import com.github.fabriciofx.cactoos.jdbc.QueryParams;
+import com.github.fabriciofx.cactoos.jdbc.sql.SqlParsed;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import org.cactoos.Text;
@@ -70,7 +71,7 @@ public final class QueryInBatch implements Query {
      * @param prms A list of SQL query parameters
      */
     public QueryInBatch(final Text sql, final Iterable<QueryParams> prms) {
-        this.sql = new ParsedSql(sql, prms.iterator().next());
+        this.sql = new SqlParsed(sql, prms.iterator().next());
         this.params = prms;
     }
 

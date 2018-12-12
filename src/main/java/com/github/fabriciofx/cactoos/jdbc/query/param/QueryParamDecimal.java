@@ -21,34 +21,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.cache.sql;
+package com.github.fabriciofx.cactoos.jdbc.query.param;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.cactoos.Scalar;
-import org.cactoos.Text;
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 
-public final class ColumnsSql implements Scalar<String[]>, Text {
-    private final CleanedSql origin;
+/**
+ * Decimal param.
+ *
+ * @since 0.2
+ */
+public final class QueryParamDecimal implements QueryParam {
+    /**
+     * Name.
+     */
+    private final String id;
 
-    public ColumnsSql(final CleanedSql cleaned) {
-        this.origin = cleaned;
+    /**
+     * Value.
+     */
+    private final BigDecimal value;
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The data
+     */
+    public QueryParamDecimal(final String name, final String value) {
+        this(name, new BigDecimal(value));
+    }
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The data
+     */
+    public QueryParamDecimal(final String name, final BigDecimal value) {
+        this.id = name;
+        this.value = value;
+    }
+
+    @Override
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setBigDecimal(index, this.value);
     }
 
     @Override
     public String asString() throws Exception {
-        final Pattern p = Pattern.compile(Pattern.quote("SELECT") +
-            "(.*?)" + Pattern.quote("FROM"));
-        final Matcher m = p.matcher(this.origin.asString());
-        String cols = "";
-        while (m.find()) {
-            cols = m.group(1);
-        }
-        return cols;
-    }
-
-    @Override
-    public String[] value() throws Exception {
-        return this.asString().replaceAll("\\s+", "").split(",");
+        return this.value.toString();
     }
 }

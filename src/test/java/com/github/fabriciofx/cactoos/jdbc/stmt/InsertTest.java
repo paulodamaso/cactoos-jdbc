@@ -26,11 +26,11 @@ package com.github.fabriciofx.cactoos.jdbc.stmt;
 import com.github.fabriciofx.cactoos.jdbc.Server;
 import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultAsValue;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
 import com.github.fabriciofx.cactoos.jdbc.query.QueryWithKeyes;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamInt;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultAsValue;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamInt;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerH2;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerPsql;
@@ -87,8 +87,8 @@ public final class InsertTest {
                                     "INSERT INTO t01 (id, name)",
                                     "VALUES (:id, :name)"
                                 ),
-                                new ParamInt("id", 1),
-                                new ParamText("name", "Yegor Bugayenko")
+                                new QueryParamInt("id", 1),
+                                new QueryParamText("name", "Yegor Bugayenko")
                             )
                         )
                     ),
@@ -121,7 +121,7 @@ public final class InsertTest {
                         session,
                         new QueryWithKeyes(
                             "INSERT INTO t02 (name) VALUES (:name)",
-                            new ParamText("name", "Jeff Malony")
+                            new QueryParamText("name", "Jeff Malony")
                         )
                     )
                 ),
@@ -152,7 +152,7 @@ public final class InsertTest {
                         session,
                         new QueryWithKeyes(
                             "INSERT INTO t02 (name) VALUES (:name)",
-                            new ParamText("name", "Jeff Malony")
+                            new QueryParamText("name", "Jeff Malony")
                         )
                     )
                 ),
@@ -184,7 +184,7 @@ public final class InsertTest {
                         new QueryWithKeyes(
                             () -> "INSERT INTO t02 (name) VALUES (:name)",
                             "id",
-                            new ParamText("name", "Jeff Malony")
+                            new QueryParamText("name", "Jeff Malony")
                         )
                     )
                 ),

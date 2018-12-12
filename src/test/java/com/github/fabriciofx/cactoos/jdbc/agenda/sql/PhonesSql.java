@@ -24,12 +24,12 @@
 package com.github.fabriciofx.cactoos.jdbc.agenda.sql;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsValue;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsValues;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Phone;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Phones;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamUuid;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsValue;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsValues;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamUuid;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Select;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -83,7 +83,7 @@ public final class PhonesSql implements Phones {
                 this.session,
                 new QuerySimple(
                     "SELECT COUNT(number) FROM phone WHERE contact = :contact",
-                    new ParamUuid("contact", this.contact)
+                    new QueryParamUuid("contact", this.contact)
                 )
             )
         ).value();
@@ -117,7 +117,7 @@ public final class PhonesSql implements Phones {
                     this.session,
                     new QuerySimple(
                         "SELECT seq FROM phone WHERE contact = :contact",
-                        new ParamUuid("contact", this.contact)
+                        new QueryParamUuid("contact", this.contact)
                     )
                 )
             )

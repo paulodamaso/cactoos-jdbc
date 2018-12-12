@@ -21,21 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.cache.sql;
+package com.github.fabriciofx.cactoos.jdbc.query.param;
 
-import org.cactoos.Text;
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.sql.PreparedStatement;
+import java.util.UUID;
 
-public final class ChangedSql implements Text {
-    private final Text origin;
-    private final ColumnsSql columns;
+/**
+ * UUID param.
+ *
+ * @since 0.2
+ */
+public final class QueryParamUuid implements QueryParam {
+    /**
+     * Name.
+     */
+    private final String id;
 
-    public ChangedSql(final CleanedSql cleaned, final ColumnsSql cols) {
-        this.origin = cleaned;
-        this.columns = cols;
+    /**
+     * Value.
+     */
+    private final UUID value;
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The apply
+     */
+    public QueryParamUuid(final String name, final UUID value) {
+        this.id = name;
+        this.value = value;
+    }
+
+    @Override
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setObject(index, this.value);
     }
 
     @Override
     public String asString() throws Exception {
-        return this.origin.asString().replace(this.columns.asString(), " * ");
+        return this.value.toString();
     }
 }

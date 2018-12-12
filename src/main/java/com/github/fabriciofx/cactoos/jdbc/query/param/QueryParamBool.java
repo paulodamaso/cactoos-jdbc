@@ -25,15 +25,13 @@ package com.github.fabriciofx.cactoos.jdbc.query.param;
 
 import com.github.fabriciofx.cactoos.jdbc.QueryParam;
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
- * DateTime param.
+ * Boolean param.
  *
  * @since 0.2
  */
-public final class ParamDateTime implements QueryParam {
+public final class QueryParamBool implements QueryParam {
     /**
      * Name.
      */
@@ -42,14 +40,14 @@ public final class ParamDateTime implements QueryParam {
     /**
      * Value.
      */
-    private final LocalDateTime value;
+    private final Boolean value;
 
     /**
      * Ctor.
      * @param name The id
      * @param value The data
      */
-    public ParamDateTime(final String name, final LocalDateTime value) {
+    public QueryParamBool(final String name, final Boolean value) {
         this.id = name;
         this.value = value;
     }
@@ -64,7 +62,7 @@ public final class ParamDateTime implements QueryParam {
         final PreparedStatement stmt,
         final int index
     ) throws Exception {
-        stmt.setTimestamp(index, Timestamp.valueOf(this.value));
+        stmt.setBoolean(index, this.value);
     }
 
     @Override

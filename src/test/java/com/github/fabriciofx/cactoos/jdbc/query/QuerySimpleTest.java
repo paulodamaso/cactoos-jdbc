@@ -23,10 +23,10 @@
  */
 package com.github.fabriciofx.cactoos.jdbc.query;
 
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamBool;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamDate;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamDecimal;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamBool;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamDate;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamDecimal;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
 import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public final class QuerySimpleTest {
             "Can't build a simple named query",
             new QuerySimple(
                 "INSERT INTO foo2 (name) VALUES (:name)",
-                new ParamText("name", "Yegor Bugayenko")
+                new QueryParamText("name", "Yegor Bugayenko")
             ),
             new TextHasString("INSERT INTO foo2 (name) VALUES (?)")
         );
@@ -67,7 +67,7 @@ public final class QuerySimpleTest {
     public void invalid() throws Exception {
         new QuerySimple(
             "INSERT INTO foo2 (name) VALUES (:name)",
-            new ParamText("address", "Sunset Boulevard")
+            new QueryParamText("address", "Sunset Boulevard")
         ).asString();
     }
 
@@ -82,11 +82,11 @@ public final class QuerySimpleTest {
                     "(name, birthday, address, married, salary)",
                     "VALUES (:name, :birthday, :address, :married, :salary)"
                 ),
-                new ParamText("name", "John Wick"),
-                new ParamDate("birthday", "1980-08-16"),
-                new ParamText("address", "Boulevard Street, 34"),
-                new ParamBool("married", false),
-                new ParamDecimal("salary", "13456.00")
+                new QueryParamText("name", "John Wick"),
+                new QueryParamDate("birthday", "1980-08-16"),
+                new QueryParamText("address", "Boulevard Street, 34"),
+                new QueryParamBool("married", false),
+                new QueryParamDecimal("salary", "13456.00")
             ),
             new TextHasString(
                 new JoinedText(
@@ -108,11 +108,11 @@ public final class QuerySimpleTest {
                 "(name, birthday, address, married, salary)",
                 "VALUES (:name, :birthday, :address, :married, :salary)"
             ),
-            new ParamText("name", "John Wick"),
-            new ParamDate("address", "1980-08-16"),
-            new ParamText("birthday", "Boulevard Street, 34"),
-            new ParamBool("married", false),
-            new ParamDecimal("salary", "13456.00")
+            new QueryParamText("name", "John Wick"),
+            new QueryParamDate("address", "1980-08-16"),
+            new QueryParamText("birthday", "Boulevard Street, 34"),
+            new QueryParamBool("married", false),
+            new QueryParamDecimal("salary", "13456.00")
         ).asString();
     }
 }

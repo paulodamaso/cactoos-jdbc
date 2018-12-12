@@ -21,63 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.query.param;
+package com.github.fabriciofx.cactoos.jdbc.sql;
 
-import com.github.fabriciofx.cactoos.jdbc.QueryParam;
-import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.time.LocalDate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.cactoos.Scalar;
+import org.cactoos.Text;
 
-/**
- * Date param.
- *
- * @since 0.2
- */
-public final class ParamDate implements QueryParam {
-    /**
-     * Name.
-     */
-    private final String id;
+public final class SqlColumns implements Scalar<String[]>, Text {
+    private final SqlCleaned origin;
 
-    /**
-     * Value.
-     */
-    private final LocalDate value;
-
-    /**
-     * Ctor.
-     * @param name The id
-     * @param value The data
-     */
-    public ParamDate(final String name, final String value) {
-        this(name, LocalDate.parse(value));
-    }
-
-    /**
-     * Ctor.
-     * @param name The id
-     * @param value The data
-     */
-    public ParamDate(final String name, final LocalDate value) {
-        this.id = name;
-        this.value = value;
+    public SqlColumns(final SqlCleaned cleaned) {
+        this.origin = cleaned;
     }
 
     @Override
-    public String name() {
-        return this.id;
+    public String asString() throws Exception {
+        final Pattern p = Pattern.compile(Pattern.quote("SELECT") +
+            "(.*?)" + Pattern.quote("FROM"));
+        final Matcher m = p.matcher(this.origin.asString());
+        String cols = "";
+        while (m.find()) {
+            cols = m.group(1);
+        }
+        return cols;
     }
 
     @Override
-    public void prepare(
-        final PreparedStatement stmt,
-        final int index
-    ) throws Exception {
-        stmt.setDate(index, java.sql.Date.valueOf(this.value));
-    }
-
-    @Override
-    public String asString() throws IOException {
-        return this.value.toString();
+    public String[] value() throws Exception {
+        return this.asString().replaceAll("\\s+", "").split(",");
     }
 }

@@ -21,33 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+package com.github.fabriciofx.cactoos.jdbc.query.param;
 
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import org.cactoos.Scalar;
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.sql.PreparedStatement;
 
 /**
- * Result as data.
+ * Integer param.
  *
- * @param <T> Type of the rset
- * @since 0.3
+ * @since 0.2
  */
-public final class ResultAsValue<T> implements Scalar<T> {
+public final class QueryParamInt implements QueryParam {
     /**
-     * Statement that returns a ResultSet.
+     * Name.
      */
-    private final Statement<T> statement;
+    private final String id;
+
+    /**
+     * Value.
+     */
+    private final Integer value;
 
     /**
      * Ctor.
-     * @param stmt A statement
+     * @param name The id
+     * @param value The data
      */
-    public ResultAsValue(final Statement<T> stmt) {
-        this.statement = stmt;
+    public QueryParamInt(final String name, final Integer value) {
+        this.id = name;
+        this.value = value;
     }
 
     @Override
-    public T value() throws Exception {
-        return this.statement.result();
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setInt(index, this.value);
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return this.value.toString();
     }
 }

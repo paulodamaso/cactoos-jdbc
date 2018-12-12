@@ -21,20 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.cache;
+package com.github.fabriciofx.cactoos.jdbc.rset;
 
+import com.github.fabriciofx.cactoos.jdbc.cache.Columns;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public final class CachedResultSetMetada implements ResultSetMetaData {
-    private final ResultSetMetaData origin;
+public final class ResultSetMetadaWithCaching extends
+    ResultSetMetadaEnvelope {
     private final Columns columns;
 
-    public CachedResultSetMetada(
+    public ResultSetMetadaWithCaching(
         final ResultSetMetaData rsmd,
         final String... cols
     ) {
-        this.origin = rsmd;
+        super(rsmd);
         this.columns = new Columns(rsmd, cols);
     }
 
@@ -47,7 +48,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public boolean isAutoIncrement(final int column) throws SQLException {
         final boolean result;
         if (this.columns.valid(column)) {
-            result = this.origin.isAutoIncrement(column);
+            result = super.isAutoIncrement(column);
         } else {
             result = false;
         }
@@ -58,7 +59,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public boolean isCaseSensitive(final int column) throws SQLException {
         final boolean result;
         if (this.columns.valid(column)) {
-            result = this.origin.isCaseSensitive(column);
+            result = super.isCaseSensitive(column);
         } else {
             result = false;
         }
@@ -69,7 +70,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public boolean isSearchable(final int column) throws SQLException {
         final boolean result;
         if (this.columns.valid(column)) {
-            result = this.origin.isSearchable(column);
+            result = super.isSearchable(column);
         } else {
             result = false;
         }
@@ -80,7 +81,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public boolean isCurrency(final int column) throws SQLException {
         final boolean result;
         if (this.columns.valid(column)) {
-            result = this.origin.isCurrency(column);
+            result = super.isCurrency(column);
         } else {
             result = false;
         }
@@ -91,7 +92,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public int isNullable(final int column) throws SQLException {
         final int result;
         if (this.columns.valid(column)) {
-            result = this.origin.isNullable(column);
+            result = super.isNullable(column);
         } else {
             result = 0;
         }
@@ -102,7 +103,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public boolean isSigned(final int column) throws SQLException {
         final boolean result;
         if (this.columns.valid(column)) {
-            result = this.origin.isSigned(column);
+            result = super.isSigned(column);
         } else {
             result = false;
         }
@@ -133,7 +134,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public int getPrecision(final int column) throws SQLException {
         final int result;
         if (this.columns.valid(column)) {
-            result = this.origin.getPrecision(column);
+            result = super.getPrecision(column);
         } else {
             result = 0;
         }
@@ -144,7 +145,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public int getScale(final int column) throws SQLException {
         final int result;
         if (this.columns.valid(column)) {
-            result = this.origin.getScale(column);
+            result = super.getScale(column);
         } else {
             result = 0;
         }
@@ -155,7 +156,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public String getTableName(final int column) throws SQLException {
         final String result;
         if (this.columns.valid(column)) {
-            result = this.origin.getTableName(column);
+            result = super.getTableName(column);
         } else {
             result = "";
         }
@@ -166,7 +167,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public String getCatalogName(final int column) throws SQLException {
         final String result;
         if (this.columns.valid(column)) {
-            result = this.origin.getCatalogName(column);
+            result = super.getCatalogName(column);
         } else {
             result = "";
         }
@@ -177,7 +178,7 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public int getColumnType(final int column) throws SQLException {
         final int result;
         if (this.columns.valid(column)) {
-            result = this.origin.getColumnType(column);
+            result = super.getColumnType(column);
         } else {
             result = 0;
         }
@@ -188,46 +189,21 @@ public final class CachedResultSetMetada implements ResultSetMetaData {
     public String getColumnTypeName(final int column) throws SQLException {
         final String result;
         if (this.columns.valid(column)) {
-            result = this.origin.getColumnTypeName(column);
+            result = super.getColumnTypeName(column);
         } else {
             result = "";
         }
         return result;
-    }
-
-    @Override
-    public boolean isReadOnly(final int column) throws SQLException {
-        return true;
-    }
-
-    @Override
-    public boolean isWritable(final int column) throws SQLException {
-        return false;
-    }
-
-    @Override
-    public boolean isDefinitelyWritable(final int column) throws SQLException {
-        return false;
     }
 
     @Override
     public String getColumnClassName(final int column) throws SQLException {
         final String result;
         if (this.columns.valid(column)) {
-            result = this.origin.getColumnClassName(column);
+            result = super.getColumnClassName(column);
         } else {
             result = "";
         }
         return result;
-    }
-
-    @Override
-    public <T> T unwrap(final Class<T> iface) throws SQLException {
-        return this.origin.unwrap(iface);
-    }
-
-    @Override
-    public boolean isWrapperFor(final Class<?> iface) throws SQLException {
-        return this.origin.isWrapperFor(iface);
     }
 }

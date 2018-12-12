@@ -21,19 +21,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.cache.sql;
-
-import org.cactoos.Text;
-
-public final class StatementSql implements Text {
-    private final CleanedSql origin;
-
-    public StatementSql(final CleanedSql cleaned) {
-        this.origin = cleaned;
-    }
-
-    @Override
-    public String asString() throws Exception {
-        return this.origin.asString().split("[\\s+]", 2)[0];
-    }
-}
+package com.github.fabriciofx.cactoos.jdbc.adapter;

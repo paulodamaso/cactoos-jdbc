@@ -21,62 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+package com.github.fabriciofx.cactoos.jdbc.adapter;
 
 import com.github.fabriciofx.cactoos.jdbc.Statement;
 import java.sql.ResultSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import org.cactoos.Scalar;
 
 /**
- * Result as XML.
+ * Result as data.
  *
+ * @param <T> Type of the rset
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class ResultSetAsXmlEach implements Scalar<String> {
+public final class ResultSetAsValue<T> implements Scalar<T> {
     /**
      * Statement that returns a ResultSet.
      */
     private final Statement<ResultSet> statement;
 
     /**
-     * Root tag in the XML.
-     */
-    private final String root;
-
-    /**
      * Ctor.
      * @param stmt A statement
-     * @param root A root tag
      */
-    public ResultSetAsXmlEach(
-        final Statement<ResultSet> stmt,
-        final String root
-    ) {
+    public ResultSetAsValue(final Statement<ResultSet> stmt) {
         this.statement = stmt;
-        this.root = root;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public String value() throws Exception {
-        final StringBuilder strb = new StringBuilder();
+    public T value() throws Exception {
         try (ResultSet rset = this.statement.result()) {
-            for (final Map<String, Object> row : new ResultSetAsRows(rset)) {
-                strb.append(String.format("<%s>", this.root));
-                for (final String key : row.keySet()) {
-                    strb.append(
-                        String.format(
-                            "<%s>%s</%s>",
-                            key,
-                            row.get(key),
-                            key
-                        )
-                    );
-                }
-                strb.append(String.format("</%s>", this.root));
+            final Iterator<Map<String, Object>> iter = new ResultSetAsRows(rset)
+                .iterator();
+            if (iter.hasNext()) {
+                return (T) iter.next().values().toArray()[0];
+            } else {
+                throw new NoSuchElementException();
             }
         }
-        return strb.toString();
     }
 }

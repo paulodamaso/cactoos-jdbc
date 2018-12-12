@@ -24,11 +24,11 @@
 package com.github.fabriciofx.cactoos.jdbc.agenda.sql;
 
 import com.github.fabriciofx.cactoos.jdbc.Session;
+import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsValues;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Contact;
 import com.github.fabriciofx.cactoos.jdbc.agenda.Contacts;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
-import com.github.fabriciofx.cactoos.jdbc.rset.ResultSetAsValues;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
 import com.github.fabriciofx.cactoos.jdbc.stmt.Select;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -74,7 +74,7 @@ public final class ContactsSqlFiltered implements Contacts {
                         "SELECT id FROM contact WHERE LOWER(name) LIKE",
                         "'%' || :name || '%'"
                     ),
-                    new ParamText("name", name.toLowerCase(Locale.ENGLISH))
+                    new QueryParamText("name", name.toLowerCase(Locale.ENGLISH))
                 )
             )
         );

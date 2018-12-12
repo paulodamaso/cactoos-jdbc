@@ -21,54 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.stmt;
+package com.github.fabriciofx.cactoos.jdbc.query.param;
 
-import com.github.fabriciofx.cactoos.jdbc.Query;
-import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsValue;
-import java.sql.Connection;
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 /**
- * Insert with keys.
+ * Double param.
  *
- * @param <T> Type of the key
- * @since 0.1
+ * @since 0.2
  */
-public final class InsertWithKeys<T> implements Statement<T> {
+public final class QueryParamDouble implements QueryParam {
     /**
-     * The session.
+     * Name.
      */
-    private final Session session;
+    private final String id;
 
     /**
-     * The SQL query.
+     * Value.
      */
-    private final Query query;
+    private final Double value;
 
     /**
      * Ctor.
-     * @param sssn A Session
-     * @param qry A SQL query
+     * @param name The id
+     * @param value The data
      */
-    public InsertWithKeys(final Session sssn, final Query qry) {
-        this.session = sssn;
-        this.query = qry;
+    public QueryParamDouble(final String name, final Double value) {
+        this.id = name;
+        this.value = value;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public T result() throws Exception {
-        // @checkstyle NestedTryDepthCheck (10 lines)
-        try (Connection conn = this.session.connection()) {
-            try (PreparedStatement stmt = this.query.prepared(conn)) {
-                stmt.executeUpdate();
-                try (ResultSet rset = stmt.getGeneratedKeys()) {
-                    return new ResultSetAsValue<T>(() -> rset).value();
-                }
-            }
-        }
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setDouble(index, this.value);
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return this.value.toString();
     }
 }

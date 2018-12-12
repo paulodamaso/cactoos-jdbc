@@ -21,31 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.session;
+package com.github.fabriciofx.cactoos.jdbc.adapter;
 
-import com.github.fabriciofx.cactoos.jdbc.Session;
-import java.sql.Connection;
+import com.github.fabriciofx.cactoos.jdbc.Statement;
 import org.cactoos.Scalar;
-import org.cactoos.scalar.StickyScalar;
 
-public final class StickySession implements Session {
+/**
+ * Result as data.
+ *
+ * @param <T> Type of the rset
+ * @since 0.3
+ */
+public final class ResultAsValue<T> implements Scalar<T> {
     /**
-     * Sticky connection.
+     * Statement that returns a ResultSet.
      */
-    private final Scalar<Connection> connection;
+    private final Statement<T> statement;
 
     /**
      * Ctor.
-     * @param session Session
+     * @param stmt A statement
      */
-    public StickySession(final Session session) {
-        this.connection = new StickyScalar<>(
-            () -> session.connection()
-        );
+    public ResultAsValue(final Statement<T> stmt) {
+        this.statement = stmt;
     }
 
     @Override
-    public Connection connection() throws Exception {
-        return this.connection.value();
+    public T value() throws Exception {
+        return this.statement.result();
     }
 }

@@ -21,62 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.query.param;
+package com.github.fabriciofx.cactoos.jdbc.sql;
 
-import com.github.fabriciofx.cactoos.jdbc.QueryParam;
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
+import org.cactoos.Text;
 
-/**
- * Decimal param.
- *
- * @since 0.2
- */
-public final class ParamDecimal implements QueryParam {
-    /**
-     * Name.
-     */
-    private final String id;
+public final class SqlStatement implements Text {
+    private final SqlCleaned origin;
 
-    /**
-     * Value.
-     */
-    private final BigDecimal value;
-
-    /**
-     * Ctor.
-     * @param name The id
-     * @param value The data
-     */
-    public ParamDecimal(final String name, final String value) {
-        this(name, new BigDecimal(value));
-    }
-
-    /**
-     * Ctor.
-     * @param name The id
-     * @param value The data
-     */
-    public ParamDecimal(final String name, final BigDecimal value) {
-        this.id = name;
-        this.value = value;
-    }
-
-    @Override
-    public String name() {
-        return this.id;
-    }
-
-    @Override
-    public void prepare(
-        final PreparedStatement stmt,
-        final int index
-    ) throws Exception {
-        stmt.setBigDecimal(index, this.value);
+    public SqlStatement(final SqlCleaned cleaned) {
+        this.origin = cleaned;
     }
 
     @Override
     public String asString() throws Exception {
-        return this.value.toString();
+        return this.origin.asString().split("[\\s+]", 2)[0];
     }
 }

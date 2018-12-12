@@ -28,8 +28,8 @@ import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
 import com.github.fabriciofx.cactoos.jdbc.query.QueryInBatch;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamInt;
-import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamInt;
+import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamText;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerH2;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
 import com.github.fabriciofx.cactoos.jdbc.server.ServerPsql;
@@ -79,22 +79,22 @@ public final class BatchTest {
                             "VALUES (:id, :name, :age)"
                         ),
                         new QueryParamsSmart(
-                            new ParamInt("id", 1),
-                            new ParamText("name", "Jeff Bridges"),
+                            new QueryParamInt("id", 1),
+                            new QueryParamText("name", "Jeff Bridges"),
                             // @checkstyle MagicNumber (1 line)
-                            new ParamInt("age", 34)
+                            new QueryParamInt("age", 34)
                         ),
                         new QueryParamsSmart(
-                            new ParamInt("id", 2),
-                            new ParamText("name", "Anna Miller"),
+                            new QueryParamInt("id", 2),
+                            new QueryParamText("name", "Anna Miller"),
                             // @checkstyle MagicNumber (1 line)
-                            new ParamInt("age", 26)
+                            new QueryParamInt("age", 26)
                         ),
                         new QueryParamsSmart(
                             // @checkstyle MagicNumber (3 lines)
-                            new ParamInt("id", 3),
-                            new ParamText("name", "Michal Douglas"),
-                            new ParamInt("age", 32)
+                            new QueryParamInt("id", 3),
+                            new QueryParamText("name", "Michal Douglas"),
+                            new QueryParamInt("age", 32)
                         )
                     )
                 ).result();

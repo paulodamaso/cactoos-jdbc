@@ -27,11 +27,11 @@ import com.github.fabriciofx.cactoos.jdbc.QueryParam;
 import java.sql.PreparedStatement;
 
 /**
- * Boolean param.
+ * String param.
  *
  * @since 0.2
  */
-public final class ParamBool implements QueryParam {
+public final class QueryParamText implements QueryParam {
     /**
      * Name.
      */
@@ -40,14 +40,14 @@ public final class ParamBool implements QueryParam {
     /**
      * Value.
      */
-    private final Boolean value;
+    private final String value;
 
     /**
      * Ctor.
      * @param name The id
      * @param value The data
      */
-    public ParamBool(final String name, final Boolean value) {
+    public QueryParamText(final String name, final String value) {
         this.id = name;
         this.value = value;
     }
@@ -62,11 +62,11 @@ public final class ParamBool implements QueryParam {
         final PreparedStatement stmt,
         final int index
     ) throws Exception {
-        stmt.setBoolean(index, this.value);
+        stmt.setString(index, this.value);
     }
 
     @Override
     public String asString() throws Exception {
-        return this.value.toString();
+        return this.value;
     }
 }

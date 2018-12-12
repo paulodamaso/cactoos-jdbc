@@ -21,52 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.query.param;
+package com.github.fabriciofx.cactoos.jdbc.session;
 
-import com.github.fabriciofx.cactoos.jdbc.QueryParam;
-import java.sql.PreparedStatement;
+import com.github.fabriciofx.cactoos.jdbc.Session;
+import java.sql.Connection;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.StickyScalar;
 
-/**
- * String param.
- *
- * @since 0.2
- */
-public final class ParamText implements QueryParam {
+public final class SessionWithSticky implements Session {
     /**
-     * Name.
+     * Sticky connection.
      */
-    private final String id;
-
-    /**
-     * Value.
-     */
-    private final String value;
+    private final Scalar<Connection> connection;
 
     /**
      * Ctor.
-     * @param name The id
-     * @param value The data
+     * @param session Session
      */
-    public ParamText(final String name, final String value) {
-        this.id = name;
-        this.value = value;
+    public SessionWithSticky(final Session session) {
+        this.connection = new StickyScalar<>(
+            () -> session.connection()
+        );
     }
 
     @Override
-    public String name() {
-        return this.id;
-    }
-
-    @Override
-    public void prepare(
-        final PreparedStatement stmt,
-        final int index
-    ) throws Exception {
-        stmt.setString(index, this.value);
-    }
-
-    @Override
-    public String asString() throws Exception {
-        return this.value;
+    public Connection connection() throws Exception {
+        return this.connection.value();
     }
 }

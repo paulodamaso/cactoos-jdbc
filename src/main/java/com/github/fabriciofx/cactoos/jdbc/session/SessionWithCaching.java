@@ -21,52 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.query.param;
+package com.github.fabriciofx.cactoos.jdbc.session;
 
-import com.github.fabriciofx.cactoos.jdbc.QueryParam;
-import java.sql.PreparedStatement;
+import com.github.fabriciofx.cactoos.jdbc.Session;
+import com.github.fabriciofx.cactoos.jdbc.connection.ConnectionWithCaching;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Plain param.
- *
- * @since 0.2
- */
-public final class ParamAny implements QueryParam {
-    /**
-     * Name.
-     */
-    private final String id;
+public final class SessionWithCaching implements Session {
+    private final Map<String, ResultSet> cache;
+    private final Session origin;
 
-    /**
-     * Value.
-     */
-    private final Object value;
-
-    /**
-     * Ctor.
-     * @param name The id
-     * @param value The data
-     */
-    public ParamAny(final String name, final Object value) {
-        this.id = name;
-        this.value = value;
+    public SessionWithCaching(final Session session) {
+        this.origin = session;
+        this.cache = new HashMap<>();
     }
 
     @Override
-    public String name() {
-        return this.id;
-    }
-
-    @Override
-    public void prepare(
-        final PreparedStatement stmt,
-        final int index
-    ) throws Exception {
-        stmt.setObject(index, this.value);
-    }
-
-    @Override
-    public String asString() throws Exception {
-        return this.value.toString();
+    public Connection connection() throws Exception {
+        return new ConnectionWithCaching(this.origin.connection(), this.cache);
     }
 }
