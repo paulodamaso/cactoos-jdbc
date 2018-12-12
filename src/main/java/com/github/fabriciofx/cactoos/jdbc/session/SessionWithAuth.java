@@ -21,10 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.github.fabriciofx.cactoos.jdbc.session;
+
+import com.github.fabriciofx.cactoos.jdbc.Session;
+import java.sql.Connection;
+import javax.sql.DataSource;
 
 /**
- * ResultSet decorations.
+ * Authenticated session.
  *
- * @since 0.4
+ * @since 0.1
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+public final class SessionWithAuth implements Session {
+    /**
+     * The DataSource.
+     */
+    private final DataSource source;
+
+    /**
+     * User name.
+     */
+    private final String user;
+
+    /**
+     * User password.
+     */
+    private final String password;
+
+    /**
+     * Ctor.
+     * @param source DataSource
+     * @param user User name
+     * @param password User password
+     */
+    public SessionWithAuth(
+        final DataSource source,
+        final String user,
+        final String password
+    ) {
+        this.source = source;
+        this.user = user;
+        this.password = password;
+    }
+
+    @Override
+    public Connection connection() throws Exception {
+        return this.source.getConnection(this.user, this.password);
+    }
+}

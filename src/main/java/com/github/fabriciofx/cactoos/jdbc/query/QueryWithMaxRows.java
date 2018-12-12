@@ -21,10 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.github.fabriciofx.cactoos.jdbc.query;
+
+import com.github.fabriciofx.cactoos.jdbc.Query;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 /**
- * ResultSet decorations.
+ * Max rows per query.
  *
- * @since 0.4
+ * @since 0.1
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+public final class QueryWithMaxRows implements Query {
+    /**
+     * The query to be decorated.
+     */
+    private final Query origin;
+
+    /**
+     * Number of rows per query.
+     */
+    private final int rows;
+
+    /**
+     * Ctor.
+     * @param query The SQL query
+     * @param max The max number of rows
+     */
+    public QueryWithMaxRows(final Query query, final int max) {
+        this.origin = query;
+        this.rows = max;
+    }
+
+    @Override
+    public PreparedStatement prepared(
+        final Connection connection
+    ) throws Exception {
+        final PreparedStatement stmt = this.origin.prepared(connection);
+        stmt.setMaxRows(this.rows);
+        return stmt;
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return this.origin.asString();
+    }
+}

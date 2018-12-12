@@ -25,11 +25,11 @@ package com.github.fabriciofx.cactoos.jdbc.stmt;
 
 import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.query.SimpleQuery;
+import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
 import com.github.fabriciofx.cactoos.jdbc.rset.ResultAsValue;
-import com.github.fabriciofx.cactoos.jdbc.server.H2Server;
-import com.github.fabriciofx.cactoos.jdbc.server.MysqlServer;
-import com.github.fabriciofx.cactoos.jdbc.server.PsqlServer;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerH2;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerPsql;
 import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -55,9 +55,9 @@ public final class UpdateTest {
     public void createTable() throws Exception {
         try (
             Servers servers = new Servers(
-                new H2Server(),
-                new MysqlServer(),
-                new PsqlServer()
+                new ServerH2(),
+                new ServerMysql(),
+                new ServerPsql()
             )
         ) {
             for (final Session session : servers.sessions()) {
@@ -66,7 +66,7 @@ public final class UpdateTest {
                     new ResultAsValue<>(
                         new Update(
                             session,
-                            new SimpleQuery(
+                            new QuerySimple(
                                 new JoinedText(
                                     " ",
                                     "CREATE TABLE foo1 (id INT,",

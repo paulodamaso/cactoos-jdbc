@@ -26,14 +26,14 @@ package com.github.fabriciofx.cactoos.jdbc.stmt;
 import com.github.fabriciofx.cactoos.jdbc.Server;
 import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.query.KeyedQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.SimpleQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.param.IntParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.TextParam;
+import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
+import com.github.fabriciofx.cactoos.jdbc.query.QueryWithKeyes;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamInt;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
 import com.github.fabriciofx.cactoos.jdbc.rset.ResultAsValue;
-import com.github.fabriciofx.cactoos.jdbc.server.H2Server;
-import com.github.fabriciofx.cactoos.jdbc.server.MysqlServer;
-import com.github.fabriciofx.cactoos.jdbc.server.PsqlServer;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerH2;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerPsql;
 import java.math.BigInteger;
 import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
@@ -60,15 +60,15 @@ public final class InsertTest {
     public void insert() throws Exception {
         try (
             Servers servers = new Servers(
-                new H2Server(),
-                new MysqlServer(),
-                new PsqlServer()
+                new ServerH2(),
+                new ServerMysql(),
+                new ServerPsql()
             )
         ) {
             for (final Session session : servers.sessions()) {
                 new Update(
                     session,
-                    new SimpleQuery(
+                    new QuerySimple(
                         new JoinedText(
                             " ",
                             "CREATE TABLE t01 (id INT, name VARCHAR(50),",
@@ -81,14 +81,14 @@ public final class InsertTest {
                     new ResultAsValue<>(
                         new Insert(
                             session,
-                            new SimpleQuery(
+                            new QuerySimple(
                                 new JoinedText(
                                     " ",
                                     "INSERT INTO t01 (id, name)",
                                     "VALUES (:id, :name)"
                                 ),
-                                new IntParam("id", 1),
-                                new TextParam("name", "Yegor Bugayenko")
+                                new ParamInt("id", 1),
+                                new ParamText("name", "Yegor Bugayenko")
                             )
                         )
                     ),
@@ -101,12 +101,12 @@ public final class InsertTest {
     @Test
     // @checkstyle MethodNameCheck (1 line)
     public void insertWithKeysH2() throws Exception {
-        try (Server server = new H2Server()) {
+        try (Server server = new ServerH2()) {
             server.start();
             final Session session = server.session();
             new Update(
                 session,
-                new SimpleQuery(
+                new QuerySimple(
                     new JoinedText(
                         " ",
                         "CREATE TABLE t02 (id INT AUTO_INCREMENT,",
@@ -119,9 +119,9 @@ public final class InsertTest {
                 new ResultAsValue<>(
                     new InsertWithKeys<>(
                         session,
-                        new KeyedQuery(
+                        new QueryWithKeyes(
                             "INSERT INTO t02 (name) VALUES (:name)",
-                            new TextParam("name", "Jeff Malony")
+                            new ParamText("name", "Jeff Malony")
                         )
                     )
                 ),
@@ -132,12 +132,12 @@ public final class InsertTest {
 
     @Test
     public void insertWithKeysPsql() throws Exception {
-        try (Server server = new PsqlServer()) {
+        try (Server server = new ServerPsql()) {
             server.start();
             final Session session = server.session();
             new Update(
                 session,
-                new SimpleQuery(
+                new QuerySimple(
                     new JoinedText(
                         " ",
                         "CREATE TABLE t02 (id SERIAL,",
@@ -150,9 +150,9 @@ public final class InsertTest {
                 new ResultAsValue<>(
                     new InsertWithKeys<>(
                         session,
-                        new KeyedQuery(
+                        new QueryWithKeyes(
                             "INSERT INTO t02 (name) VALUES (:name)",
-                            new TextParam("name", "Jeff Malony")
+                            new ParamText("name", "Jeff Malony")
                         )
                     )
                 ),
@@ -163,12 +163,12 @@ public final class InsertTest {
 
     @Test
     public void insertWithKeysMysql() throws Exception {
-        try (Server server = new MysqlServer()) {
+        try (Server server = new ServerMysql()) {
             server.start();
             final Session session = server.session();
             new Update(
                 session,
-                new SimpleQuery(
+                new QuerySimple(
                     new JoinedText(
                         " ",
                         "CREATE TABLE t02 (id INT AUTO_INCREMENT,",
@@ -181,10 +181,10 @@ public final class InsertTest {
                 new ResultAsValue<>(
                     new InsertWithKeys<>(
                         session,
-                        new KeyedQuery(
+                        new QueryWithKeyes(
                             () -> "INSERT INTO t02 (name) VALUES (:name)",
                             "id",
-                            new TextParam("name", "Jeff Malony")
+                            new ParamText("name", "Jeff Malony")
                         )
                     )
                 ),

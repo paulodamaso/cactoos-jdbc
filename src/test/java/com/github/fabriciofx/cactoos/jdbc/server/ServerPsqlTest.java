@@ -21,10 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.github.fabriciofx.cactoos.jdbc.server;
+
+import com.github.fabriciofx.cactoos.jdbc.Server;
+import com.github.fabriciofx.cactoos.jdbc.script.SqlScriptFromInput;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.JoinedText;
+import org.junit.Test;
 
 /**
- * ResultSet decorations.
+ * PostgreSQL Server test.
  *
- * @since 0.4
+ * @since 0.2
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+public final class ServerPsqlTest {
+    @Test
+    public void startAndStop() throws Exception {
+        final Server pgsql = new ServerPsql(
+            new SqlScriptFromInput(
+                new ResourceOf(
+                    new JoinedText(
+                        "/",
+                        "com/github/fabriciofx/cactoos/jdbc/agenda",
+                        "agendadb-psql.sql"
+                    )
+                )
+            )
+        );
+        pgsql.start();
+        pgsql.stop();
+    }
+}

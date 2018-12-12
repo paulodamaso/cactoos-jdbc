@@ -21,10 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.github.fabriciofx.cactoos.jdbc.query.param;
+
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.sql.PreparedStatement;
 
 /**
- * ResultSet decorations.
+ * Long param.
  *
- * @since 0.4
+ * @since 0.2
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+public final class ParamLong implements QueryParam {
+    /**
+     * Name.
+     */
+    private final String id;
+
+    /**
+     * Value.
+     */
+    private final Long value;
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The data
+     */
+    public ParamLong(final String name, final Long value) {
+        this.id = name;
+        this.value = value;
+    }
+
+    @Override
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setLong(index, this.value);
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return this.value.toString();
+    }
+}

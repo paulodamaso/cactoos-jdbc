@@ -21,10 +21,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.github.fabriciofx.cactoos.jdbc.query.param;
+
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 
 /**
- * ResultSet decorations.
+ * Decimal param.
  *
- * @since 0.4
+ * @since 0.2
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+public final class ParamDecimal implements QueryParam {
+    /**
+     * Name.
+     */
+    private final String id;
+
+    /**
+     * Value.
+     */
+    private final BigDecimal value;
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The data
+     */
+    public ParamDecimal(final String name, final String value) {
+        this(name, new BigDecimal(value));
+    }
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The data
+     */
+    public ParamDecimal(final String name, final BigDecimal value) {
+        this.id = name;
+        this.value = value;
+    }
+
+    @Override
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setBigDecimal(index, this.value);
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return this.value.toString();
+    }
+}

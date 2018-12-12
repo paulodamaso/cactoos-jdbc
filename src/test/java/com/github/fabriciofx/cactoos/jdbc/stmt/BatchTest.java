@@ -23,16 +23,16 @@
  */
 package com.github.fabriciofx.cactoos.jdbc.stmt;
 
+import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
 import com.github.fabriciofx.cactoos.jdbc.Servers;
 import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.SmartQueryParams;
-import com.github.fabriciofx.cactoos.jdbc.query.BatchQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.SimpleQuery;
-import com.github.fabriciofx.cactoos.jdbc.query.param.IntParam;
-import com.github.fabriciofx.cactoos.jdbc.query.param.TextParam;
-import com.github.fabriciofx.cactoos.jdbc.server.H2Server;
-import com.github.fabriciofx.cactoos.jdbc.server.MysqlServer;
-import com.github.fabriciofx.cactoos.jdbc.server.PsqlServer;
+import com.github.fabriciofx.cactoos.jdbc.query.QueryInBatch;
+import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamInt;
+import com.github.fabriciofx.cactoos.jdbc.query.param.ParamText;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerH2;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerMysql;
+import com.github.fabriciofx.cactoos.jdbc.server.ServerPsql;
 import org.cactoos.text.JoinedText;
 import org.junit.Test;
 
@@ -54,15 +54,15 @@ public final class BatchTest {
     public void batch() throws Exception {
         try (
             Servers servers = new Servers(
-                new H2Server(),
-                new MysqlServer(),
-                new PsqlServer()
+                new ServerH2(),
+                new ServerMysql(),
+                new ServerPsql()
             )
         ) {
             for (final Session session : servers.sessions()) {
                 new Update(
                     session,
-                    new SimpleQuery(
+                    new QuerySimple(
                         new JoinedText(
                             " ",
                             "CREATE TABLE client (id INT,",
@@ -72,29 +72,29 @@ public final class BatchTest {
                 ).result();
                 new Batch(
                     session,
-                    new BatchQuery(
+                    new QueryInBatch(
                         new JoinedText(
                             " ",
                             "INSERT INTO client (id, name, age)",
                             "VALUES (:id, :name, :age)"
                         ),
-                        new SmartQueryParams(
-                            new IntParam("id", 1),
-                            new TextParam("name", "Jeff Bridges"),
+                        new QueryParamsSmart(
+                            new ParamInt("id", 1),
+                            new ParamText("name", "Jeff Bridges"),
                             // @checkstyle MagicNumber (1 line)
-                            new IntParam("age", 34)
+                            new ParamInt("age", 34)
                         ),
-                        new SmartQueryParams(
-                            new IntParam("id", 2),
-                            new TextParam("name", "Anna Miller"),
+                        new QueryParamsSmart(
+                            new ParamInt("id", 2),
+                            new ParamText("name", "Anna Miller"),
                             // @checkstyle MagicNumber (1 line)
-                            new IntParam("age", 26)
+                            new ParamInt("age", 26)
                         ),
-                        new SmartQueryParams(
+                        new QueryParamsSmart(
                             // @checkstyle MagicNumber (3 lines)
-                            new IntParam("id", 3),
-                            new TextParam("name", "Michal Douglas"),
-                            new IntParam("age", 32)
+                            new ParamInt("id", 3),
+                            new ParamText("name", "Michal Douglas"),
+                            new ParamInt("age", 32)
                         )
                     )
                 ).result();

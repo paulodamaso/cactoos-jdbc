@@ -21,10 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.github.fabriciofx.cactoos.jdbc.session;
+
+import com.github.fabriciofx.cactoos.jdbc.Session;
+import com.github.fabriciofx.cactoos.jdbc.connection.ConnectionWithTransaction;
+import java.sql.Connection;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.StickyScalar;
 
 /**
- * ResultSet decorations.
+ * Transacted session.
  *
- * @since 0.4
+ * <p>Produces a {@link java.sql.Connection} that only closes on commit() or
+ * rollback()</p>
+ *
+ * @since 0.1
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+public final class SessionWithTransaction implements Session {
+    /**
+     * Holded txn.
+     */
+    private final Scalar<Connection> scalar;
+
+    /**
+     * Ctor.
+     * @param session Session
+     */
+    public SessionWithTransaction(final Session session) {
+        this.scalar = new StickyScalar<>(
+            () -> {
+                final Connection connection = session.connection();
+                connection.setAutoCommit(false);
+                return new ConnectionWithTransaction(connection);
+            }
+        );
+    }
+
+    @Override
+    public Connection connection() throws Exception {
+        return this.scalar.value();
+    }
+}

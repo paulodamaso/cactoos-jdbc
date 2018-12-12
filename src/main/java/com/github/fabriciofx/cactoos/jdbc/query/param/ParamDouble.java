@@ -21,10 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.github.fabriciofx.cactoos.jdbc.query.param;
+
+import com.github.fabriciofx.cactoos.jdbc.QueryParam;
+import java.sql.PreparedStatement;
 
 /**
- * ResultSet decorations.
+ * Double param.
  *
- * @since 0.4
+ * @since 0.2
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+public final class ParamDouble implements QueryParam {
+    /**
+     * Name.
+     */
+    private final String id;
+
+    /**
+     * Value.
+     */
+    private final Double value;
+
+    /**
+     * Ctor.
+     * @param name The id
+     * @param value The data
+     */
+    public ParamDouble(final String name, final Double value) {
+        this.id = name;
+        this.value = value;
+    }
+
+    @Override
+    public String name() {
+        return this.id;
+    }
+
+    @Override
+    public void prepare(
+        final PreparedStatement stmt,
+        final int index
+    ) throws Exception {
+        stmt.setDouble(index, this.value);
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return this.value.toString();
+    }
+}

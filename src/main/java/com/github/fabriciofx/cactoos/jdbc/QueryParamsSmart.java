@@ -21,53 +21,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.fabriciofx.cactoos.jdbc.stmt;
+package com.github.fabriciofx.cactoos.jdbc;
 
-import com.github.fabriciofx.cactoos.jdbc.Session;
-import com.github.fabriciofx.cactoos.jdbc.Statement;
-import com.github.fabriciofx.cactoos.jdbc.session.SessionWithTransaction;
-import java.sql.Connection;
-import java.util.concurrent.Callable;
+import java.sql.PreparedStatement;
+import java.util.Iterator;
+import java.util.List;
+import org.cactoos.list.ListOf;
+import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.UncheckedScalar;
 
 /**
- * Transaction.
+ * Smart Query Params.
  *
- * @param <T> Type of the rset
+ * <p>There is no thread-safety guarantee.
+ *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.CloseResource"})
-public final class Transaction<T> implements Statement<T> {
+public final class QueryParamsSmart implements QueryParams {
     /**
-     * The session.
+     * Params.
      */
-    private final Session session;
-
-    /**
-     * Callable to be executed in a transaction.
-     */
-    private final Callable<T> callable;
+    private final UncheckedScalar<List<QueryParam>> params;
 
     /**
      * Ctor.
-     * @param sssn A session
-     * @param call A Callable to be executed in a transaction
+     * @param prms List of DataValue
      */
-    public Transaction(final SessionWithTransaction sssn, final Callable<T> call) {
-        this.session = sssn;
-        this.callable = call;
+    public QueryParamsSmart(final QueryParam... prms) {
+        this.params = new UncheckedScalar<>(
+            new StickyScalar<>(
+                () -> new ListOf<>(prms)
+            )
+        );
     }
 
     @Override
-    public T result() throws Exception {
-        final Connection connection = this.session.connection();
-        try {
-            final T res = this.callable.call();
-            connection.commit();
-            return res;
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            connection.rollback();
-            throw ex;
+    public PreparedStatement prepare(
+        final PreparedStatement stmt
+    ) throws Exception {
+        int idx = 1;
+        for (final QueryParam param : this.params.value()) {
+            param.prepare(stmt, idx);
+            ++idx;
         }
+        return stmt;
+    }
+
+    @Override
+    public boolean contains(final String name, final int pos) {
+        return this.params.value().get(pos).name().equals(name);
+    }
+
+    @Override
+    public Iterator<QueryParam> iterator() {
+        return this.params.value().iterator();
     }
 }

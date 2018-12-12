@@ -21,10 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.github.fabriciofx.cactoos.jdbc;
 
 /**
- * ResultSet decorations.
+ * SQL Script.
  *
- * @since 0.4
+ * @since 0.2
  */
-package com.github.fabriciofx.cactoos.jdbc.rset;
+public interface ScriptSql {
+    /**
+     * SQL Script that executes nothing.
+     */
+    ScriptSql NOP = session -> { };
+
+    /**
+     * Execute a SQL Script in the Session.
+     * @param session A Session
+     * @throws Exception if fails.
+     */
+    void run(Session session) throws Exception;
+}
