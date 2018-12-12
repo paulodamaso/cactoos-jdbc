@@ -66,7 +66,7 @@ abstract class ConnectionEnvelope implements Connection {
      */
     private final Connection origin;
 
-    public ConnectionEnvelope(final Connection connection) {
+    ConnectionEnvelope(final Connection connection) {
         this.origin = connection;
     }
 

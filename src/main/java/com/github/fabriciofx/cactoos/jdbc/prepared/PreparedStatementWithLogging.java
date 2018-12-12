@@ -60,8 +60,8 @@ import org.cactoos.text.UncheckedText;
         "PMD.AvoidUsingShortType"
     }
 )
-public final class PreparedStatementWithLogging
-    extends PreparedStatementEnvelope {
+public final class PreparedStatementWithLogging extends
+    PreparedStatementEnvelope {
     /**
      * The name of source value.
      */
@@ -296,6 +296,7 @@ public final class PreparedStatementWithLogging
             ).asString()
         );
     }
+
     @Override
     public void setFloat(
         final int parameterIndex,
@@ -441,13 +442,20 @@ public final class PreparedStatementWithLogging
     }
 
     @Override
-    public void setTime(final int parameterIndex, final Time x) throws SQLException {
+    public void setTime(
+        final int parameterIndex,
+        final Time x
+    ) throws SQLException {
         super.setTime(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%s' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at parameter[#%d]",
+                        "with '%s' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -456,14 +464,22 @@ public final class PreparedStatementWithLogging
             ).asString()
         );
     }
+
     @Override
-    public void setTimestamp(final int parameterIndex, final Timestamp x) throws SQLException {
+    public void setTimestamp(
+        final int parameterIndex,
+        final Timestamp x
+    ) throws SQLException {
         super.setTimestamp(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%s' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at parameter[#%d]",
+                        "with '%s' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -472,14 +488,23 @@ public final class PreparedStatementWithLogging
             ).asString()
         );
     }
+
     @Override
-    public void setAsciiStream(final int parameterIndex, final InputStream x, final int length) throws SQLException {
+    public void setAsciiStream(
+        final int parameterIndex,
+        final InputStream x,
+        final int length
+    ) throws SQLException {
         super.setAsciiStream(parameterIndex, x, length);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' bytes.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at parameter[#%d]",
+                        "with '%d' bytes."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -498,13 +523,21 @@ public final class PreparedStatementWithLogging
      * @throws SQLException If fails
      */
     @Deprecated
-    public void setUnicodeStream(final int parameterIndex, final InputStream x, final int length) throws SQLException {
+    public void setUnicodeStream(
+        final int parameterIndex,
+        final InputStream x,
+        final int length
+    ) throws SQLException {
         super.setUnicodeStream(parameterIndex, x, length);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' bytes.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at parameter[#%d]",
+                        "with '%d' bytes."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -515,13 +548,21 @@ public final class PreparedStatementWithLogging
     }
 
     @Override
-    public void setBinaryStream(final int parameterIndex, final InputStream x, final int length) throws SQLException {
+    public void setBinaryStream(
+        final int parameterIndex,
+        final InputStream x,
+        final int length
+    ) throws SQLException {
         super.setBinaryStream(parameterIndex, x, length);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%d' bytes.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at parameter[#%d]",
+                        "with '%d' bytes."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -547,13 +588,21 @@ public final class PreparedStatementWithLogging
     }
 
     @Override
-    public void setObject(final int parameterIndex, final Object x, final int targetSqlType) throws SQLException {
+    public void setObject(
+        final int parameterIndex,
+        final Object x,
+        final int targetSqlType
+    ) throws SQLException {
         super.setObject(parameterIndex, x, targetSqlType);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%s' data and '%d' type.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at parameter[#%d]",
+                        "with '%s' data and '%d' type."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -565,13 +614,20 @@ public final class PreparedStatementWithLogging
     }
 
     @Override
-    public void setObject(final int parameterIndex, final Object x) throws SQLException {
+    public void setObject(
+        final int parameterIndex,
+        final Object x
+    ) throws SQLException {
         super.setObject(parameterIndex, x);
         this.logger.log(
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed at parameter[#%d] with '%s' value.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed at parameter[#%d]",
+                        "with '%s' value."
+                    ),
                     this.source,
                     this.id,
                     parameterIndex,
@@ -682,7 +738,11 @@ public final class PreparedStatementWithLogging
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed max field size to '%d' bytes.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed max field",
+                        "size to '%d' bytes."
+                    ),
                     this.source,
                     this.id,
                     max
@@ -714,7 +774,11 @@ public final class PreparedStatementWithLogging
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] changed timeout to '%d' seconds.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] changed timeout",
+                        "to '%d' seconds."
+                    ),
                     this.source,
                     this.id,
                     seconds
@@ -822,7 +886,11 @@ public final class PreparedStatementWithLogging
             this.level,
             new UncheckedText(
                 new FormattedText(
-                    "[%s] PreparedStatement[#%d] returned a ResultSet keys in %dms.",
+                    new JoinedText(
+                        " ",
+                        "[%s] PreparedStatement[#%d] returned a",
+                        "ResultSet keys in %dms."
+                    ),
                     this.source,
                     this.id,
                     millis

@@ -77,7 +77,7 @@ abstract class PreparedStatementEnvelope implements PreparedStatement {
      * Ctor.
      * @param prepared Decorated PreparedStatement
      */
-    public PreparedStatementEnvelope(final PreparedStatement prepared) {
+    PreparedStatementEnvelope(final PreparedStatement prepared) {
         this.origin = prepared;
     }
 

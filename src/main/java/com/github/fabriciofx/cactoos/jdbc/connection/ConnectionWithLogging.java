@@ -24,6 +24,7 @@
 package com.github.fabriciofx.cactoos.jdbc.connection;
 
 import com.github.fabriciofx.cactoos.jdbc.prepared.PreparedStatementWithLogging;
+import java.io.PrintStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
