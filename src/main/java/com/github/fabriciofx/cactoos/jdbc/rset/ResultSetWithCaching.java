@@ -26,7 +26,6 @@ package com.github.fabriciofx.cactoos.jdbc.rset;
 import com.github.fabriciofx.cactoos.jdbc.Rows;
 import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsRows;
 import com.github.fabriciofx.cactoos.jdbc.row.FilteredRows;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -114,11 +113,6 @@ public final class ResultSetWithCaching extends ResultSetEnvelope {
     }
 
     @Override
-    public byte[] getBytes(final int columnIndex) throws SQLException {
-        return new byte[0];
-    }
-
-    @Override
     public Date getDate(final int columnIndex) throws SQLException {
         return (Date) this.getObject(columnIndex);
     }
@@ -131,27 +125,6 @@ public final class ResultSetWithCaching extends ResultSetEnvelope {
     @Override
     public Timestamp getTimestamp(final int columnIndex) throws SQLException {
         return (Timestamp) this.getObject(columnIndex);
-    }
-
-    @Override
-    public InputStream getAsciiStream(final int columnIndex) throws SQLException {
-        return null;
-    }
-
-    /**
-     * Get a stream in Unicode.
-     * @deprecated It not should be used
-     * @param columnIndex Column index
-     * @throws SQLException If fails
-     */
-    @Deprecated
-    public InputStream getUnicodeStream(final int columnIndex) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public InputStream getBinaryStream(final int columnIndex) throws SQLException {
-        return null;
     }
 
     @Override
@@ -205,11 +178,6 @@ public final class ResultSetWithCaching extends ResultSetEnvelope {
     public BigDecimal getBigDecimal(final String columnLabel,
                                     final int scale) throws SQLException {
         return (BigDecimal) this.getObject(columnLabel);
-    }
-
-    @Override
-    public byte[] getBytes(final String columnLabel) throws SQLException {
-        return new byte[0];
     }
 
     @Override
@@ -325,14 +293,5 @@ public final class ResultSetWithCaching extends ResultSetEnvelope {
     @Override
     public <T> T getObject(final String columnLabel, final Class<T> type) throws SQLException {
         return type.cast(this.getObject(columnLabel));
-    }
-
-    @Override
-    public <T> T unwrap(final Class<T> iface) throws SQLException {
-        return null;
-    }
-    @Override
-    public boolean isWrapperFor(final Class<?> iface) throws SQLException {
-        return false;
     }
 }
