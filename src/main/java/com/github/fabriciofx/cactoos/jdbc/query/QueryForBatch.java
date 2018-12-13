@@ -36,7 +36,7 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.1
  */
-public final class QueryInBatch implements Query {
+public final class QueryForBatch implements Query {
     /**
      * SQL query.
      */
@@ -52,7 +52,7 @@ public final class QueryInBatch implements Query {
      * @param sql The SQL query
      * @param prms A list of SQL query parameters
      */
-    public QueryInBatch(final String sql, final QueryParams... prms) {
+    public QueryForBatch(final String sql, final QueryParams... prms) {
         this(() -> sql, prms);
     }
 
@@ -61,7 +61,7 @@ public final class QueryInBatch implements Query {
      * @param sql The SQL query
      * @param prms A list of SQL query parameters
      */
-    public QueryInBatch(final Text sql, final QueryParams... prms) {
+    public QueryForBatch(final Text sql, final QueryParams... prms) {
         this(sql, new ListOf<>(prms));
     }
 
@@ -70,7 +70,7 @@ public final class QueryInBatch implements Query {
      * @param sql The SQL query
      * @param prms A list of SQL query parameters
      */
-    public QueryInBatch(final Text sql, final Iterable<QueryParams> prms) {
+    public QueryForBatch(final Text sql, final Iterable<QueryParams> prms) {
         this.sql = new SqlParsed(sql, prms.iterator().next());
         this.params = prms;
     }

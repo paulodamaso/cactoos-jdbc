@@ -27,7 +27,7 @@ import com.github.fabriciofx.cactoos.jdbc.QueryParamsSmart;
 import com.github.fabriciofx.cactoos.jdbc.Rows;
 import com.github.fabriciofx.cactoos.jdbc.Session;
 import com.github.fabriciofx.cactoos.jdbc.adapter.ResultSetAsRows;
-import com.github.fabriciofx.cactoos.jdbc.query.QueryInBatch;
+import com.github.fabriciofx.cactoos.jdbc.query.QueryForBatch;
 import com.github.fabriciofx.cactoos.jdbc.query.QuerySimple;
 import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamBool;
 import com.github.fabriciofx.cactoos.jdbc.query.param.QueryParamDate;
@@ -66,7 +66,7 @@ public final class ResultSetAsRowsTest {
         ).result();
         new Batch(
             session,
-            new QueryInBatch(
+            new QueryForBatch(
                 new JoinedText(
                     " ",
                     "INSERT INTO employee",
